@@ -39,6 +39,17 @@ The following parameters can be set in config files or in env variables:
 - `esConfig.ES_INDEX_JOB_CANDIDATE`: the index name for job candidate
 - `esConfig.ES_INDEX_RESOURCE_BOOKING`: the index name for resource booking
 
+- `auth0.AUTH0_URL`: Auth0 URL, used to get TC M2M token
+- `auth0.AUTH0_AUDIENCE`: Auth0 audience, used to get TC M2M token
+- `auth0.AUTH0_CLIENT_ID`: Auth0 client id, used to get TC M2M token
+- `auth0.AUTH0_CLIENT_SECRET`: Auth0 client secret, used to get TC M2M token
+- `auth0.AUTH0_PROXY_SERVER_URL`: Proxy Auth0 URL, used to get TC M2M token
+
+- `zapier.ZAPIER_COMPANYID_SLUG`: your company id in zapier; numeric value
+- `zapier.ZAPIER_CONTACTID_SLUG`: your contact id in zapier; numeric value
+- `zapier.ZAPIER_SWITCH`: decides whether posting message to zapier or not; possible values are `ON` and `OFF`, default is `OFF`
+- `zapier.ZAPIER_WEBHOOK`: the remote zapier zap webhook url for posting message
+
 ## Local Kafka and ElasticSearch setup
 
 1. Navigate to the directory `local`

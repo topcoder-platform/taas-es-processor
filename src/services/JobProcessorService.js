@@ -25,6 +25,10 @@ async function processCreate (message, transactionId) {
     body: _.omit(job, 'id'),
     refresh: constants.esRefreshOption
   })
+  await helper.postMessageToZapier({
+    type: constants.Zapier.MessageType.JobCreate,
+    payload: job
+  })
 }
 
 processCreate.schema = {
@@ -68,6 +72,10 @@ async function processUpdate (message, transactionId) {
       doc: _.omit(data, ['id'])
     },
     refresh: constants.esRefreshOption
+  })
+  await helper.postMessageToZapier({
+    type: constants.Zapier.MessageType.JobUpdate,
+    payload: data
   })
 }
 

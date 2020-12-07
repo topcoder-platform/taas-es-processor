@@ -4,15 +4,20 @@
 
 const AWS = require('aws-sdk')
 const config = require('config')
+const request = require('superagent')
+const logger = require('./logger')
 const elasticsearch = require('@elastic/elasticsearch')
 const _ = require('lodash')
 const { Mutex } = require('async-mutex')
+const m2mAuth = require('tc-core-library-js').auth.m2m
+const constants = require('./constants')
 
 AWS.config.region = config.esConfig.AWS_REGION
 
 // Elasticsearch client
 let esClient
 let transactionId
+let m2m
 // Mutex to ensure that only one elasticsearch action is carried out at any given time
 const esClientMutex = new Mutex()
 const mutexReleaseMap = {}
@@ -135,8 +140,47 @@ function checkEsMutexRelease (tId) {
   }
 }
 
+/*
+ * Function to get M2M token
+ * @returns {Promise}
+ */
+async function getM2MToken () {
+  if (!m2m) {
+    m2m = m2mAuth(_.pick(config.auth0, ['AUTH0_URL', 'AUTH0_AUDIENCE', 'AUTH0_PROXY_SERVER_URL']))
+  }
+  return m2m.getMachineToken(config.auth0.AUTH0_CLIENT_ID, config.auth0.AUTH0_CLIENT_SECRET)
+}
+
+/**
+ * Post message to zapier via webhook url.
+ *
+ * @param {Object} message the message object
+ * @returns {undefined}
+ */
+async function postMessageToZapier ({ type, payload }) {
+  if (config.zapier.ZAPIER_SWITCH === constants.Zapier.Switch.OFF) {
+    logger.debug({ component: 'helper', context: 'postMessageToZapier', message: 'Zapier Switch off via config, no messages sent' })
+    return
+  }
+  const requestBody = {
+    type,
+    payload,
+    companySlug: config.zapier.ZAPIER_COMPANYID_SLUG,
+    contactSlug: config.zapier.ZAPIER_CONTACTID_SLUG
+  }
+  if (type === constants.Zapier.MessageType.JobCreate) {
+    const token = await getM2MToken()
+    requestBody.authToken = token
+    requestBody.topcoderApiUrl = config.zapier.TOPCODER_API_URL
+  }
+  logger.debug({ component: 'helper', context: 'postMessageToZapier', message: `request body: ${JSON.stringify(requestBody)}` })
+  await request.post(config.zapier.ZAPIER_WEBHOOK)
+    .send(requestBody)
+}
+
 module.exports = {
   getKafkaOptions,
   getESClient,
-  checkEsMutexRelease
+  checkEsMutexRelease,
+  postMessageToZapier
 }
