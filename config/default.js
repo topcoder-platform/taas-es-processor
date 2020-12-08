@@ -43,5 +43,21 @@ module.exports = {
     ES_INDEX_JOB: process.env.ES_INDEX_JOB || 'job',
     ES_INDEX_JOB_CANDIDATE: process.env.ES_INDEX_JOB_CANDIDATE || 'job_candidate',
     ES_INDEX_RESOURCE_BOOKING: process.env.ES_INDEX_RESOURCE_BOOKING || 'resource_booking'
+  },
+
+  auth0: {
+    AUTH0_URL: process.env.AUTH0_URL,
+    AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
+    AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
+    AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
+    AUTH0_PROXY_SERVER_URL: process.env.AUTH0_PROXY_SERVER_URL
+  },
+
+  zapier: {
+    ZAPIER_COMPANYID_SLUG: process.env.ZAPIER_COMPANYID_SLUG,
+    ZAPIER_CONTACTID_SLUG: process.env.ZAPIER_CONTACTID_SLUG,
+    ZAPIER_SWITCH: process.env.ZAPIER_SWITCH || 'OFF',
+    ZAPIER_WEBHOOK: process.env.ZAPIER_WEBHOOK,
+    TOPCODER_API_URL: process.env.TOPCODER_API_URL || 'http://api.topcoder-dev.com/v5'
   }
 }
