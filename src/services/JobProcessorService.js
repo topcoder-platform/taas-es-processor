@@ -25,6 +25,10 @@ async function processCreate (message, transactionId) {
     body: _.omit(job, 'id'),
     refresh: constants.esRefreshOption
   })
+  await helper.postMessageToZapier({
+    type: constants.Zapier.MessageType.JobCreate,
+    payload: job
+  })
 }
 
 processCreate.schema = {
@@ -43,6 +47,7 @@ processCreate.schema = {
       numPositions: Joi.number().integer().min(1).required(),
       resourceType: Joi.string().required(),
       rateType: Joi.rateType(),
+      workload: Joi.workload(),
       skills: Joi.array().items(Joi.string().uuid()).required(),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
@@ -68,6 +73,10 @@ async function processUpdate (message, transactionId) {
     },
     refresh: constants.esRefreshOption
   })
+  await helper.postMessageToZapier({
+    type: constants.Zapier.MessageType.JobUpdate,
+    payload: data
+  })
 }
 
 processUpdate.schema = {
@@ -86,6 +95,7 @@ processUpdate.schema = {
       numPositions: Joi.number().integer().min(1),
       resourceType: Joi.string(),
       rateType: Joi.rateType(),
+      workload: Joi.workload(),
       skills: Joi.array().items(Joi.string().uuid()),
       status: Joi.jobStatus(),
       updatedAt: Joi.date(),
