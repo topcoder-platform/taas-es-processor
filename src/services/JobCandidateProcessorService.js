@@ -39,7 +39,9 @@ processCreate.schema = {
       userId: Joi.string().uuid().required(),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
-      status: Joi.jobCandidateStatus().required()
+      status: Joi.jobCandidateStatus().required(),
+      externalId: Joi.string(),
+      resume: Joi.string().uri()
     }).required()
   }).required(),
   transactionId: Joi.string().required()
@@ -74,6 +76,8 @@ processUpdate.schema = {
       jobId: Joi.string().uuid(),
       userId: Joi.string().uuid(),
       status: Joi.jobCandidateStatus(),
+      externalId: Joi.string(),
+      resume: Joi.string().uri(),
       updatedAt: Joi.date(),
       updatedBy: Joi.string().uuid()
     }).required()
