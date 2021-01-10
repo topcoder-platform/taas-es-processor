@@ -15,6 +15,7 @@ const zapierSwitch = Joi.string().label('ZAPIER_SWITCH').valid(...Object.values(
 // validate configuration
 try {
   Joi.attempt(config.zapier.ZAPIER_SWITCH, zapierSwitch)
+  Joi.attempt(config.zapier.ZAPIER_JOB_CANDIDATE_SWITCH, zapierSwitch)
 } catch (err) {
   console.error(err.message)
   process.exit(1)

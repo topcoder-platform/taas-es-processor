@@ -21,9 +21,9 @@ const eventEmitter = new events.EventEmitter()
 process.env.PORT = config.PORT
 
 const localLogger = {
-  'info': (message) => logger.info({ component: 'app', message }),
-  'debug': (message) => logger.debug({ component: 'app', message }),
-  'error': (message) => logger.error({ component: 'app', message })
+  info: (message) => logger.info({ component: 'app', message }),
+  debug: (message) => logger.debug({ component: 'app', message }),
+  error: (message) => logger.error({ component: 'app', message })
 }
 
 const topicServiceMapping = {
@@ -47,7 +47,7 @@ localLogger.info('Starting kafka consumer')
 const consumer = new Kafka.GroupConsumer(helper.getKafkaOptions())
 
 let count = 0
-let mutex = new Mutex()
+const mutex = new Mutex()
 
 async function getLatestCount () {
   const release = await mutex.acquire()
@@ -71,7 +71,7 @@ const dataHandler = (messageSet, topic, partition) => Promise.each(messageSet, a
   localLogger.info(`Handle Kafka event message; Topic: ${topic}; Partition: ${partition}; Offset: ${
     m.offset}; Message: ${message}.`)
   let messageJSON
-  let messageCount = await getLatestCount()
+  const messageCount = await getLatestCount()
 
   localLogger.debug(`Current message count: ${messageCount}`)
   try {

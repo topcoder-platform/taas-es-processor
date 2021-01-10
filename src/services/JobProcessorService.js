@@ -11,6 +11,35 @@ const config = require('config')
 
 const esClient = helper.getESClient()
 
+const localLogger = {
+  debug: ({ context, message }) => logger.debug({ component: 'JobProcessorService', context, message })
+}
+
+/**
+ * Post message to zapier for Job.
+ *
+ * @param {Object} message the message object
+ * @returns {undefined}
+ */
+async function postMessageToZapier ({ type, payload }) {
+  if (config.zapier.ZAPIER_SWITCH === constants.Zapier.Switch.OFF) {
+    localLogger.debug({ context: 'postMessageToZapier', message: 'Zapier Switch off via config, no messages sent' })
+    return
+  }
+  const message = {
+    type,
+    payload,
+    companySlug: config.zapier.ZAPIER_COMPANYID_SLUG,
+    contactSlug: config.zapier.ZAPIER_CONTACTID_SLUG
+  }
+  if (type === constants.Zapier.MessageType.JobCreate) {
+    const token = await helper.getM2MToken()
+    message.authToken = token
+    message.topcoderApiUrl = config.zapier.TOPCODER_API_URL
+  }
+  await helper.postMessageViaWebhook(config.zapier.ZAPIER_WEBHOOK, message)
+}
+
 /**
  * Process create entity message
  * @param {Object} message the kafka message
@@ -25,7 +54,7 @@ async function processCreate (message, transactionId) {
     body: _.omit(job, 'id'),
     refresh: constants.esRefreshOption
   })
-  await helper.postMessageToZapier({
+  await postMessageToZapier({
     type: constants.Zapier.MessageType.JobCreate,
     payload: job
   })
@@ -74,7 +103,7 @@ async function processUpdate (message, transactionId) {
     },
     refresh: constants.esRefreshOption
   })
-  await helper.postMessageToZapier({
+  await postMessageToZapier({
     type: constants.Zapier.MessageType.JobUpdate,
     payload: data
   })

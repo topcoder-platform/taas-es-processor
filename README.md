@@ -47,8 +47,10 @@ The following parameters can be set in config files or in env variables:
 
 - `zapier.ZAPIER_COMPANYID_SLUG`: your company id in zapier; numeric value
 - `zapier.ZAPIER_CONTACTID_SLUG`: your contact id in zapier; numeric value
-- `zapier.ZAPIER_SWITCH`: decides whether posting message to zapier or not; possible values are `ON` and `OFF`, default is `OFF`
-- `zapier.ZAPIER_WEBHOOK`: the remote zapier zap webhook url for posting message
+- `zapier.ZAPIER_SWITCH`: decides whether posting job related message to zapier or not; possible values are `ON` and `OFF`, default is `OFF`
+- `zapier.ZAPIER_WEBHOOK`: the remote zapier zap webhook url for posting job related message
+- `zapier.ZAPIER_JOB_CANDIDATE_SWITCH`: decides whether posting job candidate related message to zapier or not; possible values are `ON` and `OFF`, default is `OFF`
+- `zapier.ZAPIER_JOB_CANDIDATE_WEBHOOK`: the remote zapier zap webhook url for posting job candidate related message
 
 ## Local Kafka and ElasticSearch setup
 
