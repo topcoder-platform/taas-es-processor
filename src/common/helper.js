@@ -10,7 +10,6 @@ const elasticsearch = require('@elastic/elasticsearch')
 const _ = require('lodash')
 const { Mutex } = require('async-mutex')
 const m2mAuth = require('tc-core-library-js').auth.m2m
-const constants = require('./constants')
 
 AWS.config.region = config.esConfig.AWS_REGION
 
@@ -154,33 +153,19 @@ async function getM2MToken () {
 /**
  * Post message to zapier via webhook url.
  *
- * @param {Object} message the message object
+ * @param {String} webhook the webhook url
+ * @param {Object} message the message data
  * @returns {undefined}
  */
-async function postMessageToZapier ({ type, payload }) {
-  if (config.zapier.ZAPIER_SWITCH === constants.Zapier.Switch.OFF) {
-    logger.debug({ component: 'helper', context: 'postMessageToZapier', message: 'Zapier Switch off via config, no messages sent' })
-    return
-  }
-  const requestBody = {
-    type,
-    payload,
-    companySlug: config.zapier.ZAPIER_COMPANYID_SLUG,
-    contactSlug: config.zapier.ZAPIER_CONTACTID_SLUG
-  }
-  if (type === constants.Zapier.MessageType.JobCreate) {
-    const token = await getM2MToken()
-    requestBody.authToken = token
-    requestBody.topcoderApiUrl = config.zapier.TOPCODER_API_URL
-  }
-  logger.debug({ component: 'helper', context: 'postMessageToZapier', message: `request body: ${JSON.stringify(requestBody)}` })
-  await request.post(config.zapier.ZAPIER_WEBHOOK)
-    .send(requestBody)
+async function postMessageViaWebhook (webhook, message) {
+  logger.debug({ component: 'helper', context: 'postMessageToZapier', message: `message: ${JSON.stringify(message)}` })
+  await request.post(webhook).send(message)
 }
 
 module.exports = {
   getKafkaOptions,
   getESClient,
   checkEsMutexRelease,
-  postMessageToZapier
+  getM2MToken,
+  postMessageViaWebhook
 }

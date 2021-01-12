@@ -12,7 +12,9 @@ module.exports = {
     },
     MessageType: {
       JobCreate: 'job:create',
-      JobUpdate: 'job:update'
+      JobUpdate: 'job:update',
+      JobCandidateCreate: 'jobcandidate:create',
+      JobCandidateUpdate: 'jobcandidate:update'
     }
   }
 }
