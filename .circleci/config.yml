@@ -49,15 +49,15 @@ jobs:
     environment:
       DEPLOY_ENV: "DEV"
       LOGICAL_ENV: "dev"
-      APPNAME: "taas-es-processor"    
+      APPNAME: "taas-es-processor"
     steps: *builddeploy_steps
 
   "build-prod":
     <<: *defaults
     environment:
       DEPLOY_ENV: "PROD"
-      LOGICAL_ENV: "prod"    
-      APPNAME: "taas-es-processor"    
+      LOGICAL_ENV: "prod"
+      APPNAME: "taas-es-processor"
     steps: *builddeploy_steps
 
 workflows:
@@ -71,6 +71,7 @@ workflows:
             branches:
               only:
                 - dev
+                - dev-1_5
                 - dev-circleci
 
       # Production builds are exectuted only on tagged commits to the
