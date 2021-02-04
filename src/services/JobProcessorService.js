@@ -51,7 +51,7 @@ async function processCreate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_JOB'),
     id: job.id,
     transactionId,
-    body: _.omit(job, 'id'),
+    body: job,
     refresh: constants.esRefreshOption
   })
   await postMessageToZapier({
@@ -99,7 +99,7 @@ async function processUpdate (message, transactionId) {
     id: data.id,
     transactionId,
     body: {
-      doc: _.omit(data, ['id'])
+      doc: data
     },
     refresh: constants.esRefreshOption
   })

@@ -22,7 +22,7 @@ async function processCreate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     id: resourcebooking.id,
     transactionId,
-    body: _.omit(resourcebooking, 'id'),
+    body: resourcebooking,
     refresh: constants.esRefreshOption
   })
 }
@@ -63,7 +63,7 @@ async function processUpdate (message, transactionId) {
     id: data.id,
     transactionId,
     body: {
-      doc: _.omit(data, ['id'])
+      doc: data
     },
     refresh: constants.esRefreshOption
   })
