@@ -80,7 +80,7 @@ async function processCreate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
     id: jobcandidate.id,
     transactionId,
-    body: _.omit(jobcandidate, 'id'),
+    body: jobcandidate,
     refresh: constants.esRefreshOption
   })
 }
@@ -117,7 +117,7 @@ async function processUpdate (message, transactionId) {
     id: data.id,
     transactionId,
     body: {
-      doc: _.omit(data, ['id'])
+      doc: data
     },
     refresh: constants.esRefreshOption
   })
