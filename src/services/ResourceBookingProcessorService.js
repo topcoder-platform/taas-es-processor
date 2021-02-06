@@ -37,14 +37,16 @@ processCreate.schema = {
       id: Joi.string().uuid().required(),
       projectId: Joi.number().integer().required(),
       userId: Joi.string().uuid().required(),
-      jobId: Joi.string().uuid(),
-      startDate: Joi.date(),
-      endDate: Joi.date(),
-      memberRate: Joi.number(),
-      customerRate: Joi.number(),
+      jobId: Joi.string().uuid().allow(null),
+      startDate: Joi.date().allow(null),
+      endDate: Joi.date().allow(null),
+      memberRate: Joi.number().allow(null),
+      customerRate: Joi.number().allow(null),
       rateType: Joi.rateType().required(),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
+      updatedAt: Joi.date().allow(null),
+      updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobStatus().required()
     }).required()
   }).required(),
@@ -69,29 +71,7 @@ async function processUpdate (message, transactionId) {
   })
 }
 
-processUpdate.schema = {
-  message: Joi.object().keys({
-    topic: Joi.string().required(),
-    originator: Joi.string().required(),
-    timestamp: Joi.date().required(),
-    'mime-type': Joi.string().required(),
-    payload: Joi.object().keys({
-      id: Joi.string().uuid().required(),
-      projectId: Joi.number().integer(),
-      userId: Joi.string().uuid(),
-      jobId: Joi.string().uuid(),
-      startDate: Joi.date(),
-      endDate: Joi.date(),
-      memberRate: Joi.number(),
-      customerRate: Joi.number(),
-      rateType: Joi.rateType(),
-      status: Joi.jobStatus(),
-      updatedAt: Joi.date(),
-      updatedBy: Joi.string().uuid()
-    }).required()
-  }).required(),
-  transactionId: Joi.string().required()
-}
+processUpdate.schema = processCreate.schema
 
 /**
  * Process delete entity message
