@@ -2,7 +2,6 @@
  * Jobcandidate Processor Service
  */
 
-const _ = require('lodash')
 const Joi = require('@hapi/joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
@@ -101,7 +100,7 @@ processCreate.schema = {
       updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobCandidateStatus().required(),
       externalId: Joi.string().allow(null),
-      resume: Joi.string().uri().allow(null),
+      resume: Joi.string().uri().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()

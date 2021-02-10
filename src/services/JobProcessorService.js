@@ -2,7 +2,6 @@
  * Job Processor Service
  */
 
-const _ = require('lodash')
 const Joi = require('@hapi/joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
@@ -73,7 +72,7 @@ processCreate.schema = {
       description: Joi.stringAllowEmpty().allow(null),
       title: Joi.title().required(),
       startDate: Joi.date().allow(null),
-      endDate: Joi.date().allow(null),
+      duration: Joi.number().integer().min(1).allow(null),
       numPositions: Joi.number().integer().min(1).required(),
       resourceType: Joi.stringAllowEmpty().allow(null),
       rateType: Joi.rateType().allow(null),
