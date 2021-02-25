@@ -2,7 +2,6 @@
  * Jobcandidate Processor Service
  */
 
-const _ = require('lodash')
 const Joi = require('@hapi/joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
@@ -80,7 +79,7 @@ async function processCreate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
     id: jobcandidate.id,
     transactionId,
-    body: _.omit(jobcandidate, 'id'),
+    body: jobcandidate,
     refresh: constants.esRefreshOption
   })
 }
@@ -97,9 +96,11 @@ processCreate.schema = {
       userId: Joi.string().uuid().required(),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
+      updatedAt: Joi.date().allow(null),
+      updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobCandidateStatus().required(),
-      externalId: Joi.string(),
-      resume: Joi.string().uri()
+      externalId: Joi.string().allow(null),
+      resume: Joi.string().uri().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
@@ -117,7 +118,7 @@ async function processUpdate (message, transactionId) {
     id: data.id,
     transactionId,
     body: {
-      doc: _.omit(data, ['id'])
+      doc: data
     },
     refresh: constants.esRefreshOption
   })
@@ -127,25 +128,7 @@ async function processUpdate (message, transactionId) {
   })
 }
 
-processUpdate.schema = {
-  message: Joi.object().keys({
-    topic: Joi.string().required(),
-    originator: Joi.string().required(),
-    timestamp: Joi.date().required(),
-    'mime-type': Joi.string().required(),
-    payload: Joi.object().keys({
-      id: Joi.string().uuid(),
-      jobId: Joi.string().uuid(),
-      userId: Joi.string().uuid(),
-      status: Joi.jobCandidateStatus(),
-      externalId: Joi.string(),
-      resume: Joi.string().uri(),
-      updatedAt: Joi.date(),
-      updatedBy: Joi.string().uuid()
-    }).required()
-  }).required(),
-  transactionId: Joi.string().required()
-}
+processUpdate.schema = processCreate.schema
 
 /**
  * Process delete entity message

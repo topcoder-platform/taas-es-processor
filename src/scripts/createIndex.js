@@ -20,7 +20,7 @@ async function createIndex () {
             description: { type: 'text' },
             title: { type: 'text' },
             startDate: { type: 'date' },
-            endDate: { type: 'date' },
+            duration: { type: 'integer' },
             numPositions: { type: 'integer' },
             resourceType: { type: 'keyword' },
             rateType: { type: 'keyword' },
