@@ -27,6 +27,7 @@ async function createIndex () {
             workload: { type: 'keyword' },
             skills: { type: 'keyword' },
             status: { type: 'keyword' },
+            isApplicationPageActive: { type: 'boolean' },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },
