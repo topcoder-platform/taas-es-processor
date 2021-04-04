@@ -75,6 +75,29 @@ async function createIndex () {
           }
         }
       }
+    },
+    {
+      index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
+      body: {
+        mappings: {
+          properties: {
+            resourceBookingId: { type: 'keyword' },
+            userHandle: { type: 'keyword' },
+            projectId: { type: 'integer' },
+            userId: { type: 'keyword' },
+            startDate: { type: 'date', format: 'yyyy-MM-dd' },
+            endDate: { type: 'date', format: 'yyyy-MM-dd' },
+            daysWorked: { type: 'integer' },
+            memberRate: { type: 'float' },
+            customerRate: { type: 'float' },
+            paymentStatus: { type: 'keyword' },
+            createdAt: { type: 'date' },
+            createdBy: { type: 'keyword' },
+            updatedAt: { type: 'date' },
+            updatedBy: { type: 'keyword' }
+          }
+        }
+      }
     }]
 
   for (const index of indices) {
