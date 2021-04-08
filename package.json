@@ -10,19 +10,21 @@
     "create-index": "node src/scripts/createIndex.js",
     "delete-index": "node src/scripts/deleteIndex.js",
     "view-data": "node src/scripts/view-data.js",
-    "test": "mocha test/unit/test.js --require test/unit/prepare.js --timeout 20000 --exit",
-    "test:cov": "nyc --reporter=html --reporter=text mocha test/unit/test.js --require test/unit/prepare.js --timeout 20000 --exit",
-    "e2e": "mocha test/e2e/test.js --timeout 20000 --exit",
-    "e2e:cov": "nyc --reporter=html --reporter=text mocha test/e2e/test.js --timeout 20000 --exit"
+    "test": "cross-env NODE_ENV=test mocha test/unit/test.js --require test/unit/prepare.js --timeout 20000 --exit",
+    "test:cov": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha test/unit/test.js --require test/unit/prepare.js --timeout 20000 --exit",
+    "e2e": "cross-env NODE_ENV=test mocha test/e2e/test.js --timeout 20000 --exit",
+    "e2e:cov": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha test/e2e/test.js --timeout 20000 --exit"
   },
   "author": "TCSCODER",
   "license": "none",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "mocha": "^7.1.2",
     "mocha-prepare": "^0.1.0",
     "nock": "^12.0.3",
     "nyc": "^14.1.1",
     "should": "^13.2.3",
+    "sinon": "^10.0.1",
     "standard": "^12.0.1",
     "stringcase": "^4.3.1",
     "superagent": "^5.1.0"
