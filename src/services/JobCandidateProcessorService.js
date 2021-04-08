@@ -20,9 +20,9 @@ const localLogger = {
  * @param {Object} message the message object
  * @returns {undefined}
  */
-async function updateCandidateStatus ({ type, payload }) {
-  if (!payload.status) {
-    localLogger.debug({ context: 'updateCandidateStatus', message: 'status not updated' })
+async function updateCandidateStatus ({ type, payload, previousData }) {
+  if (previousData.status === payload.status) {
+    localLogger.debug({ context: 'updateCandidateStatus', message: `jobCandidate is already in status: ${payload.status}` })
     return
   }
   if (!['rejected', 'shortlist'].includes(payload.status)) {
@@ -56,13 +56,13 @@ async function updateCandidateStatus ({ type, payload }) {
  * @param {Object} message the message object
  * @returns {undefined}
  */
-async function postMessageToZapier ({ type, payload }) {
+async function postMessageToZapier ({ type, payload, previousData }) {
   if (config.zapier.ZAPIER_JOB_CANDIDATE_SWITCH === constants.Zapier.Switch.OFF) {
     localLogger.debug({ context: 'postMessageToZapier', message: 'Zapier Switch off via config, no messages sent' })
     return
   }
   if (type === constants.Zapier.MessageType.JobCandidateUpdate) {
-    await updateCandidateStatus({ type, payload })
+    await updateCandidateStatus({ type, payload, previousData })
     return
   }
   throw new Error(`unrecognized message type: ${type}`)
@@ -113,6 +113,12 @@ processCreate.schema = {
  */
 async function processUpdate (message, transactionId) {
   const data = message.payload
+  // save previous data for Zapier logic
+  // NOTE: ideally if we update Kafka event message to have both: pervious and updated value so we don't have to request it again
+  const { body: previousData } = await esClient.getExtra({
+    index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
+    id: data.id
+  })
   await esClient.updateExtra({
     index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
     id: data.id,
@@ -124,7 +130,8 @@ async function processUpdate (message, transactionId) {
   })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobCandidateUpdate,
-    payload: data
+    payload: data,
+    previousData
   })
 }
 
