@@ -6,7 +6,7 @@ global.Promise = require('bluebird')
 
 Joi.rateType = () => Joi.string().valid('hourly', 'daily', 'weekly', 'monthly')
 Joi.jobStatus = () => Joi.string().valid('sourcing', 'in-review', 'assigned', 'closed', 'cancelled')
-Joi.jobCandidateStatus = () => Joi.string().valid('open', 'selected', 'shortlist', 'rejected', 'cancelled', 'interview')
+Joi.jobCandidateStatus = () => Joi.string().valid('open', 'selected', 'shortlist', 'rejected', 'cancelled', 'interview', 'topcoder-rejected')
 Joi.workload = () => Joi.string().valid('full-time', 'fractional')
 Joi.title = () => Joi.string().max(128)
 Joi.paymentStatus = () => Joi.string().valid('pending', 'partially-completed', 'completed', 'cancelled')
