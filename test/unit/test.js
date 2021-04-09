@@ -250,10 +250,33 @@ describe('Zapier Logic Tests', () => {
       helper.postMessageViaWebhook.callCount.should.equal(0)
     })
 
-    it('should not post to Zapier if status is changed to "selected" (not "rejected" or "shortlist")', async () => {
+    it('should not post to Zapier if status is changed to "interview" (not "rejected" or "shortlist")', async () => {
       const previousData = _.assign({}, testData.messages.JobCandidate.create.message.payload, { status: 'open', externalId: '123' })
       const updateMessage = _.assign({}, testData.messages.JobCandidate.update.message, {
-        payload: _.assign({}, testData.messages.JobCandidate.update.message.payload, { status: 'selected', externalId: '123' })
+        payload: _.assign({}, testData.messages.JobCandidate.update.message.payload, { status: 'interview', externalId: '123' })
+      })
+
+      await testHelper.esClient.create({
+        index: config.esConfig.ES_INDEX_JOB,
+        id: previousData.id,
+        body: previousData,
+        refresh: 'true'
+      })
+      await testHelper.esClient.create({
+        index: config.esConfig.ES_INDEX_JOB_CANDIDATE,
+        id: testData.messages.Job.create.message.payload.id,
+        body: testData.messages.Job.create.message.payload,
+        refresh: 'true'
+      })
+      await services[`JobCandidateProcessorService`].processUpdate(updateMessage, transactionId)
+
+      helper.postMessageViaWebhook.callCount.should.equal(0)
+    })
+
+    it('should not post to Zapier if status is changed to "topcoder-rejected" (not "rejected" or "shortlist")', async () => {
+      const previousData = _.assign({}, testData.messages.JobCandidate.create.message.payload, { status: 'open', externalId: '123' })
+      const updateMessage = _.assign({}, testData.messages.JobCandidate.update.message, {
+        payload: _.assign({}, testData.messages.JobCandidate.update.message.payload, { status: 'topcoder-rejected', externalId: '123' })
       })
 
       await testHelper.esClient.create({
