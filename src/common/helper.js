@@ -109,6 +109,22 @@ function getESClient () {
     }
   }
 
+  // get document or catch not found error
+  esClient.getExtra = async function (data) {
+    let doc
+
+    try {
+      doc = await esClient.getSource(data)
+    } catch (err) {
+      if (err.statusCode === 404) {
+        throw new Error(`id: ${data.id} "${data.index}" not found`)
+      }
+      throw err
+    }
+
+    return doc
+  }
+
   // delete document or catch not found error
   esClient.deleteExtra = async function (data) {
     try {
