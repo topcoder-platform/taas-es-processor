@@ -3,7 +3,6 @@
  */
 
 const config = require('config')
-const _ = require('lodash')
 const stringcase = require('stringcase')
 const app = require('../../src/app')
 const request = require('superagent')
@@ -89,14 +88,14 @@ describe('Taas ES Processor E2E Test', () => {
         index,
         id: testData.messages[model].create.message.payload.id
       })
-      should.deepEqual(doc.body._source, _.omit(testData.messages[model].create.message.payload, ['id']))
+      should.deepEqual(doc.body._source, testData.messages[model].create.message.payload, ['id'])
     })
 
     it(`Should handle ${modelInSpaceCase} updating message`, async () => {
       await testHelper.esClient.create({
         index,
         id: testData.messages[model].create.message.payload.id,
-        body: _.omit(testData.messages[model].create.message.payload, ['id']),
+        body: testData.messages[model].create.message.payload,
         refresh: 'true'
       })
       await testHelper.sendMessage(testData.messages[model].update.message)
@@ -105,14 +104,14 @@ describe('Taas ES Processor E2E Test', () => {
         index,
         id: testData.messages[model].update.message.payload.id
       })
-      should.deepEqual(_.omit(doc.body._source, ['createdAt', 'createdBy']), _.omit(testData.messages[model].update.message.payload, ['id']))
+      should.deepEqual(doc.body._source, testData.messages[model].update.message.payload)
     })
 
     it(`Should handle ${modelInSpaceCase} deletion message`, async () => {
       await testHelper.esClient.create({
         index,
         id: testData.messages[model].create.message.payload.id,
-        body: _.omit(testData.messages[model].create.message.payload, ['id']),
+        body: testData.messages[model].create.message.payload,
         refresh: 'true'
       })
       await testHelper.sendMessage(testData.messages[model].delete.message)
@@ -133,7 +132,7 @@ describe('Taas ES Processor E2E Test', () => {
       await testHelper.esClient.create({
         index,
         id: testData.messages[model].create.message.payload.id,
-        body: _.omit(testData.messages[model].create.message.payload, ['id']),
+        body: testData.messages[model].create.message.payload,
         refresh: 'true'
       })
       await testHelper.sendMessage(testData.messages[model].create.message)
