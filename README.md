@@ -33,6 +33,8 @@ The following parameters can be set in config files or in env variables:
 - `topics.TAAS_WORK_PERIOD_CREATE_TOPIC`: the create work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_UPDATE_TOPIC`: the update work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_DELETE_TOPIC`: the delete work period entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC`: the create work period payment entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC`: the update work period payment entity Kafka message topic
 - `esConfig.HOST`: Elasticsearch host
 - `esConfig.AWS_REGION`: The Amazon region to use when using AWS Elasticsearch service
 - `esConfig.ELASTICCLOUD.id`: The elastic cloud id, if your elasticsearch instance is hosted on elastic cloud. DO NOT provide a value for ES_HOST if you are using this

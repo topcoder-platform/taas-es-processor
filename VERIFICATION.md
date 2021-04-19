@@ -2,7 +2,7 @@
 
 ## Create documents in ES
 
-- Run the following commands to create `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod` documents in ES.
+- Run the following commands to create `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment` documents in ES.
 
   ``` bash
   # for Job
@@ -13,12 +13,14 @@
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.resourcebooking.create < test/messages/taas.resourcebooking.create.event.json
   # for WorkPeriod
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiod.create < test/messages/taas.workperiod.create.event.json
+  # for WorkPeriodPayment
+  docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiodpayment.create < test/messages/taas.workperiodpayment.create.event.json
   ```
 
 - Run `npm run view-data <model-name-here>` to see if documents were created.
 
 ## Update documents in ES
-- Run the following commands to update `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod` documents in ES.
+- Run the following commands to update `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment` documents in ES.
 
   ``` bash
   # for Job
@@ -29,6 +31,8 @@
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.resourcebooking.update < test/messages/taas.resourcebooking.update.event.json
   # for WorkPeriod
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiod.update < test/messages/taas.workperiod.update.event.json
+  # for WorkPeriodPayment
+  docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiodpayment.update < test/messages/taas.workperiodpayment.update.event.json
   ```
 
 - Run `npm run view-data <model-name-here>` to see if documents were updated.
