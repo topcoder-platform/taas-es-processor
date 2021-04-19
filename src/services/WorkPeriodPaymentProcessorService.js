@@ -18,19 +18,19 @@ const esClient = helper.getESClient()
  */
 async function processCreate (message, transactionId) {
   const data = message.payload
-  const workPeriod = await esClient.get({
+  const workPeriod = await esClient.getExtra({
     index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
     id: data.workPeriodId
   })
-  const payments = _.isArray(workPeriod.body._source.payments) ? workPeriod.body._source.payments : []
+  const payments = _.isArray(workPeriod.body.payments) ? workPeriod.body.payments : []
   payments.push(data)
 
-  return esClient.update({
+  return esClient.updateExtra({
     index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
     id: data.workPeriodId,
     transactionId,
     body: {
-      doc: _.assign(workPeriod.body._source, { payments })
+      doc: _.assign(workPeriod.body, { payments })
     },
     refresh: constants.esRefreshOption
   })
@@ -77,12 +77,15 @@ async function processUpdate (message, transactionId) {
       }
     }
   })
+  if (!workPeriod.body.hits.total.value) {
+    throw new Error(`id: ${data.id} "WorkPeriodPayments" not found`)
+  }
   let payments
   // if WorkPeriodPayment's workPeriodId changed then it must be deleted from the old WorkPeriod
   // and added to the new WorkPeriod
   if (workPeriod.body.hits.hits[0]._source.id !== data.workPeriodId) {
     payments = _.filter(workPeriod.body.hits.hits[0]._source.payments, (payment) => payment.id !== data.id)
-    await esClient.update({
+    await esClient.updateExtra({
       index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
       id: workPeriod.body.hits.hits[0]._source.id,
       transactionId,
@@ -90,18 +93,18 @@ async function processUpdate (message, transactionId) {
         doc: _.assign(workPeriod.body.hits.hits[0]._source, { payments })
       }
     })
-    workPeriod = await esClient.get({
+    workPeriod = await esClient.getExtra({
       index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
       id: data.workPeriodId
     })
-    payments = _.isArray(workPeriod.body._source.payments) ? workPeriod.body._source.payments : []
+    payments = _.isArray(workPeriod.body.payments) ? workPeriod.body.payments : []
     payments.push(data)
-    return esClient.update({
+    return esClient.updateExtra({
       index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
       id: data.workPeriodId,
       transactionId,
       body: {
-        doc: _.assign(workPeriod.body._source, { payments })
+        doc: _.assign(workPeriod.body, { payments })
       }
     })
   }
@@ -113,7 +116,7 @@ async function processUpdate (message, transactionId) {
     return payment
   })
 
-  return esClient.update({
+  return esClient.updateExtra({
     index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
     id: data.workPeriodId,
     transactionId,
