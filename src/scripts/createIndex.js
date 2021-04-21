@@ -46,6 +46,22 @@ async function createIndex () {
             status: { type: 'keyword' },
             externalId: { type: 'keyword' },
             resume: { type: 'text' },
+            interviews: {
+              type: 'nested',
+              properties: {
+                id: { type: 'keyword' },
+                jobCandidateId: { type: 'keyword' },
+                googleCalendarId: { type: 'keyword' },
+                customMessage: { type: 'text' },
+                xaiTemplate: { type: 'keyword' },
+                round: { type: 'integer' },
+                status: { type: 'keyword' },
+                createdAt: { type: 'date' },
+                createdBy: { type: 'keyword' },
+                updatedAt: { type: 'date' },
+                updatedBy: { type: 'keyword' }
+              }
+            },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },

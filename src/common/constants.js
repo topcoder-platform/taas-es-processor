@@ -16,5 +16,10 @@ module.exports = {
       JobCandidateCreate: 'jobcandidate:create',
       JobCandidateUpdate: 'jobcandidate:update'
     }
+  },
+  Interview: {
+    Status: {
+      Requested: 'Requested'
+    }
   }
 }
