@@ -1,6 +1,10 @@
 const Joi = require('@hapi/joi')
 const config = require('config')
+const _ = require('lodash')
+const { Interview } = require('../src/common/constants')
 const constants = require('./common/constants')
+
+const allowedInterviewStatuses = _.values(Interview.Status)
 
 global.Promise = require('bluebird')
 
@@ -10,6 +14,7 @@ Joi.jobCandidateStatus = () => Joi.string().valid('open', 'selected', 'shortlist
 Joi.workload = () => Joi.string().valid('full-time', 'fractional')
 Joi.title = () => Joi.string().max(128)
 Joi.paymentStatus = () => Joi.string().valid('pending', 'partially-completed', 'completed', 'cancelled')
+Joi.interviewStatus = () => Joi.string().valid(...allowedInterviewStatuses)
 // Empty string is not allowed by Joi by default and must be enabled with allow('').
 // See https://joi.dev/api/?v=17.3.0#string fro details why it's like this.
 // In many cases we would like to allow empty string to make it easier to create UI for editing data.
