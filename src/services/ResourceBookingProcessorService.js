@@ -37,9 +37,7 @@ processCreate.schema = {
       projectId: Joi.number().integer().required(),
       userId: Joi.string().uuid().required(),
       jobId: Joi.string().uuid().allow(null),
-      // eslint-disable-next-line no-useless-escape
       startDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
-      // eslint-disable-next-line no-useless-escape
       endDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
       memberRate: Joi.number().allow(null),
       customerRate: Joi.number().allow(null),
