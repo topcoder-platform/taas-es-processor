@@ -52,6 +52,8 @@ async function createIndex () {
                 id: { type: 'keyword' },
                 jobCandidateId: { type: 'keyword' },
                 googleCalendarId: { type: 'keyword' },
+                startTimestamp: { type: 'date' },
+                attendeesList: { type: 'keyword' },
                 customMessage: { type: 'text' },
                 xaiTemplate: { type: 'keyword' },
                 round: { type: 'integer' },

@@ -19,7 +19,12 @@ module.exports = {
   },
   Interview: {
     Status: {
-      Requested: 'Requested'
+      Scheduling: 'Scheduling',
+      Scheduled: 'Scheduled',
+      RequestedForReschedule: 'Requested for reschedule',
+      Rescheduled: 'Rescheduled',
+      Completed: 'Completed',
+      Cancelled: 'Cancelled'
     }
   }
 }
