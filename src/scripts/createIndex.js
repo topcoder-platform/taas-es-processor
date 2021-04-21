@@ -109,6 +109,19 @@ async function createIndex () {
             memberRate: { type: 'float' },
             customerRate: { type: 'float' },
             paymentStatus: { type: 'keyword' },
+            payments: {
+              type: 'nested',
+              properties: {
+                workPeriodId: { type: 'keyword' },
+                challengeId: { type: 'keyword' },
+                amount: { type: 'float' },
+                status: { type: 'keyword' },
+                createdAt: { type: 'date' },
+                createdBy: { type: 'keyword' },
+                updatedAt: { type: 'date' },
+                updatedBy: { type: 'keyword' }
+              }
+            },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },
