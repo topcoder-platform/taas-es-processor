@@ -13,6 +13,7 @@ const JobProcessorService = require('./services/JobProcessorService')
 const JobCandidateProcessorService = require('./services/JobCandidateProcessorService')
 const ResourceBookingProcessorService = require('./services/ResourceBookingProcessorService')
 const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorService')
+const InterviewProcessorService = require('./services/InterviewProcessorService')
 const Mutex = require('async-mutex').Mutex
 const events = require('events')
 
@@ -43,7 +44,11 @@ const topicServiceMapping = {
   // work period
   [config.topics.TAAS_WORK_PERIOD_CREATE_TOPIC]: WorkPeriodProcessorService.processCreate,
   [config.topics.TAAS_WORK_PERIOD_UPDATE_TOPIC]: WorkPeriodProcessorService.processUpdate,
-  [config.topics.TAAS_WORK_PERIOD_DELETE_TOPIC]: WorkPeriodProcessorService.processDelete
+  [config.topics.TAAS_WORK_PERIOD_DELETE_TOPIC]: WorkPeriodProcessorService.processDelete,
+  // interview
+  [config.topics.TAAS_INTERVIEW_REQUEST_TOPIC]: InterviewProcessorService.processRequestInterview,
+  [config.topics.TAAS_INTERVIEW_UPDATE_TOPIC]: InterviewProcessorService.processUpdateInterview,
+  [config.topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC]: InterviewProcessorService.processBulkUpdateInterviews
 }
 
 // Start kafka consumer
