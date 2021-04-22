@@ -33,6 +33,8 @@ The following parameters can be set in config files or in env variables:
 - `topics.TAAS_WORK_PERIOD_CREATE_TOPIC`: the create work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_UPDATE_TOPIC`: the update work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_DELETE_TOPIC`: the delete work period entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC`: the create work period payment entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC`: the update work period payment entity Kafka message topic
 - `topics.TAAS_INTERVIEW_REQUEST_TOPIC`: the request interview entity Kafka message topic
 - `topics.TAAS_INTERVIEW_UPDATE_TOPIC`: the update interview entity Kafka message topic
 - `topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC`: the bulk update interview entity Kafka message topic
