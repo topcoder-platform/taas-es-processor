@@ -48,6 +48,7 @@ processCreate.schema = {
       challengeId: Joi.string().uuid().required(),
       amount: Joi.number().greater(0).allow(null),
       status: Joi.workPeriodPaymentStatus().required(),
+      billingAccountId: Joi.number().allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),

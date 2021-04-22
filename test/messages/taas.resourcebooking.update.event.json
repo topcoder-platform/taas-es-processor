@@ -14,6 +14,7 @@
         "customerRate": 13,
         "rateType": "hourly",
         "status": "assigned",
+        "billingAccountId": 80000071,
         "updatedAt": "2020-11-05T19:00:25.062Z",
         "updatedBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
         "createdAt": "2020-11-05T19:00:16.268Z",

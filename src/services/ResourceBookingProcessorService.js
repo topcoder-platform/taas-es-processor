@@ -46,7 +46,8 @@ processCreate.schema = {
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
       updatedBy: Joi.string().uuid().allow(null),
-      status: Joi.resourceBookingStatus().required()
+      status: Joi.resourceBookingStatus().required(),
+      billingAccountId: Joi.number().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
