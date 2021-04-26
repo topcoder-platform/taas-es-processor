@@ -63,11 +63,49 @@ async function createIndex () {
             userId: { type: 'keyword' },
             jobId: { type: 'keyword' },
             status: { type: 'keyword' },
-            startDate: { type: 'date' },
-            endDate: { type: 'date' },
+            startDate: { type: 'date', format: 'yyyy-MM-dd' },
+            endDate: { type: 'date', format: 'yyyy-MM-dd' },
             memberRate: { type: 'float' },
             customerRate: { type: 'float' },
             rateType: { type: 'keyword' },
+            billingAccountId: { type: 'integer' },
+            createdAt: { type: 'date' },
+            createdBy: { type: 'keyword' },
+            updatedAt: { type: 'date' },
+            updatedBy: { type: 'keyword' }
+          }
+        }
+      }
+    },
+    {
+      index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
+      body: {
+        mappings: {
+          properties: {
+            resourceBookingId: { type: 'keyword' },
+            userHandle: { type: 'keyword' },
+            projectId: { type: 'integer' },
+            userId: { type: 'keyword' },
+            startDate: { type: 'date', format: 'yyyy-MM-dd' },
+            endDate: { type: 'date', format: 'yyyy-MM-dd' },
+            daysWorked: { type: 'integer' },
+            memberRate: { type: 'float' },
+            customerRate: { type: 'float' },
+            paymentStatus: { type: 'keyword' },
+            payments: {
+              type: 'nested',
+              properties: {
+                workPeriodId: { type: 'keyword' },
+                challengeId: { type: 'keyword' },
+                amount: { type: 'float' },
+                status: { type: 'keyword' },
+                billingAccountId: { type: 'integer' },
+                createdAt: { type: 'date' },
+                createdBy: { type: 'keyword' },
+                updatedAt: { type: 'date' },
+                updatedBy: { type: 'keyword' }
+              }
+            },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },

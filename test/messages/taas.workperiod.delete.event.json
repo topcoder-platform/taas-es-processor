@@ -1,0 +1,9 @@
+{
+    "topic": "taas.workperiod.delete",
+    "originator": "taas-api",
+    "timestamp": "2021-03-30T20:13:58.491Z",
+    "mime-type": "application/json",
+    "payload": {
+        "id": "926040c4-1709-4de2-b2b6-52adf6e5e72d"
+    }
+}

@@ -1,5 +1,5 @@
 /**
- * ResourceBooking Processor Service
+ * WorkPeriod Processor Service
  */
 
 const Joi = require('@hapi/joi')
@@ -16,12 +16,12 @@ const esClient = helper.getESClient()
  * @param {String} transactionId
  */
 async function processCreate (message, transactionId) {
-  const resourcebooking = message.payload
+  const workPeriod = message.payload
   await esClient.createExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    id: resourcebooking.id,
+    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
+    id: workPeriod.id,
     transactionId,
-    body: resourcebooking,
+    body: workPeriod,
     refresh: constants.esRefreshOption
   })
 }
@@ -34,20 +34,19 @@ processCreate.schema = {
     'mime-type': Joi.string().required(),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
+      resourceBookingId: Joi.string().uuid().required(),
+      userHandle: Joi.string().required(),
       projectId: Joi.number().integer().required(),
-      userId: Joi.string().uuid().required(),
-      jobId: Joi.string().uuid().allow(null),
-      startDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
-      endDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
+      startDate: Joi.string().required(),
+      endDate: Joi.string().required(),
+      daysWorked: Joi.number().integer().min(0).allow(null),
       memberRate: Joi.number().allow(null),
       customerRate: Joi.number().allow(null),
-      rateType: Joi.rateType().required(),
+      paymentStatus: Joi.paymentStatus().required(),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
-      updatedBy: Joi.string().uuid().allow(null),
-      status: Joi.resourceBookingStatus().required(),
-      billingAccountId: Joi.number().allow(null)
+      updatedBy: Joi.string().uuid().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
@@ -61,7 +60,7 @@ processCreate.schema = {
 async function processUpdate (message, transactionId) {
   const data = message.payload
   await esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
     id: data.id,
     transactionId,
     body: {
@@ -81,7 +80,7 @@ processUpdate.schema = processCreate.schema
 async function processDelete (message, transactionId) {
   const id = message.payload.id
   await esClient.deleteExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
     id,
     transactionId,
     refresh: constants.esRefreshOption
@@ -107,4 +106,4 @@ module.exports = {
   processDelete
 }
 
-logger.buildService(module.exports, 'ResourceBookingProcessorService')
+logger.buildService(module.exports, 'WorkPeriodProcessorService')
