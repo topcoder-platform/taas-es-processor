@@ -27,8 +27,8 @@ module.exports = {
       Cancelled: 'Cancelled'
     },
     XaiTemplate: {
-      '30MinInterview': '30-minutes',
-      '60MinInterview': '60-minutes'
+      '30MinInterview': 'interview-30',
+      '60MinInterview': 'interview-60'
     }
   }
 }
