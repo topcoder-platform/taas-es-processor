@@ -25,7 +25,8 @@ async function updateCandidateStatus ({ type, payload, previousData }) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `jobCandidate is already in status: ${payload.status}` })
     return
   }
-  if (!['rejected', 'shortlist'].includes(payload.status)) {
+  //if (!['rejected', 'shortlist',].includes(payload.status)) {
+  if (!['client rejected - screening', 'interview',].includes(payload.status)) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `not interested status: ${payload.status}` })
     return
   }
