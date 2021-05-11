@@ -64,7 +64,7 @@ processRequestInterview.schema = {
       templateUrl: Joi.xaiTemplate().required(),
       templateId: Joi.string().allow(null),
       templateType: Joi.string().allow(null),
-      title: Joi.string().uuid().allow(null),
+      title: Joi.string().allow(null),
       locationDetails: Joi.string().uuid().allow(null),
       round: Joi.number().integer().positive().required(),
       duration: Joi.number().integer().positive().required(),
