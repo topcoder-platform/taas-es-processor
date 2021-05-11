@@ -58,11 +58,11 @@ processRequestInterview.schema = {
     'mime-type': Joi.string().required(),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
-      xaiId: Joi.string().uuid().allow(null),
+      xaiId: Joi.string().allow(null),
       jobCandidateId: Joi.string().uuid().required(),
       calendarEventId: Joi.string().allow(null),
       templateUrl: Joi.xaiTemplate().required(),
-      templateId: Joi.string().uuid().allow(null),
+      templateId: Joi.string().allow(null),
       templateType: Joi.string().allow(null),
       title: Joi.string().uuid().allow(null),
       locationDetails: Joi.string().uuid().allow(null),
