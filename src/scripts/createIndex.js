@@ -71,7 +71,8 @@ async function createIndex () {
                 createdAt: { type: 'date' },
                 createdBy: { type: 'keyword' },
                 updatedAt: { type: 'date' },
-                updatedBy: { type: 'keyword' }
+                updatedBy: { type: 'keyword' },
+                deletedAt: { type: 'date' }
               }
             },
             createdAt: { type: 'date' },

@@ -79,7 +79,8 @@ processRequestInterview.schema = {
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
-      updatedBy: Joi.string().uuid().allow(null)
+      updatedBy: Joi.string().uuid().allow(null),
+      deletedAt: Joi.date().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
