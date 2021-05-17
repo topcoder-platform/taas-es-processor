@@ -54,8 +54,7 @@ module.exports = {
 
     ES_INDEX_JOB: process.env.ES_INDEX_JOB || 'job',
     ES_INDEX_JOB_CANDIDATE: process.env.ES_INDEX_JOB_CANDIDATE || 'job_candidate',
-    ES_INDEX_RESOURCE_BOOKING: process.env.ES_INDEX_RESOURCE_BOOKING || 'resource_booking',
-    ES_INDEX_WORK_PERIOD: process.env.ES_INDEX_WORK_PERIOD || 'work_period'
+    ES_INDEX_RESOURCE_BOOKING: process.env.ES_INDEX_RESOURCE_BOOKING || 'resource_booking'
   },
 
   auth0: {

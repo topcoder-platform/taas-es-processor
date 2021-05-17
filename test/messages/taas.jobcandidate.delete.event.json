@@ -1,1 +1,9 @@
-{"topic":"taas.jobcandidate.delete","originator":"taas-api","timestamp":"2020-11-05T19:00:23.021Z","mime-type":"application/json","payload":{"id":"0cb99adb-8bcd-4952-9203-9867dd45ef6f"}}
+{
+    "topic": "taas.jobcandidate.delete",
+    "originator": "taas-api",
+    "timestamp": "2020-11-05T19:00:23.021Z",
+    "mime-type": "application/json",
+    "payload": {
+        "id": "0cb99adb-8bcd-4952-9203-9867dd45ef6f"
+    }
+}

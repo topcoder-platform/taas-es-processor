@@ -11,8 +11,7 @@ const esClient = helper.getESClient()
 const modelIndexMapping = {
   Job: 'ES_INDEX_JOB',
   JobCandidate: 'ES_INDEX_JOB_CANDIDATE',
-  ResourceBooking: 'ES_INDEX_RESOURCE_BOOKING',
-  WorkPeriod: 'ES_INDEX_WORK_PERIOD'
+  ResourceBooking: 'ES_INDEX_RESOURCE_BOOKING'
 }
 
 async function showESData () {

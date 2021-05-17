@@ -32,7 +32,7 @@ prepare(function (done) {
     .reply((uri, body) => {
       const id = idFromUri(uri)
       if (testData.esStorage.content[id]) {
-        testData.esStorage.content[id] = body.doc
+        _.assign(testData.esStorage.content[id], body.doc)
         return [200]
       } else {
         return [404]
@@ -57,6 +57,31 @@ prepare(function (done) {
         return [200, testData.esStorage.content[id]]
       } else {
         return [404]
+      }
+    })
+    .post(uri => uri.includes('_search'))
+    .query(true)
+    .reply(uri => {
+      if (Object.keys(testData.esStorage.content).length > 0) {
+        return [200, {
+          hits: {
+            total: {
+              value: 1
+            },
+            hits: [{
+              _source: testData.esStorage.content[Object.keys(testData.esStorage.content)[0]]
+            }]
+          }
+        } ]
+      } else {
+        return [200, {
+          hits: {
+            total: {
+              value: 0
+            },
+            hits: []
+          }
+        } ]
       }
     })
   done()
