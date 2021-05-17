@@ -46,7 +46,6 @@ The following parameters can be set in config files or in env variables:
 - `esConfig.ES_INDEX_JOB`: the index name for job
 - `esConfig.ES_INDEX_JOB_CANDIDATE`: the index name for job candidate
 - `esConfig.ES_INDEX_RESOURCE_BOOKING`: the index name for resource booking
-- `esConfig.ES_INDEX_WORK_PERIOD`: the index name for work period
 
 - `auth0.AUTH0_URL`: Auth0 URL, used to get TC M2M token
 - `auth0.AUTH0_AUDIENCE`: Auth0 audience, used to get TC M2M token
