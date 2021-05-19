@@ -27,6 +27,7 @@ async function processCreate (message, transactionId) {
   // Append new workPeriod
   workPeriods.push(workPeriod)
   // Update ResourceBooking's workPeriods property
+  console.log("workperiod value-999 : ", workPeriod)
   await esClient.updateExtra({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     id: workPeriod.resourceBookingId,
