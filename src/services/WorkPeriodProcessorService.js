@@ -22,12 +22,13 @@ async function processCreate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     id: workPeriod.resourceBookingId
   })
+  console.log(`[RB value-999] before update: ${JSON.stringify(resourceBooking)}`)
   // Get ResourceBooking's existing workPeriods
   const workPeriods = _.isArray(resourceBooking.body.workPeriods) ? resourceBooking.body.workPeriods : []
   // Append new workPeriod
   workPeriods.push(workPeriod)
   // Update ResourceBooking's workPeriods property
-  console.log("workperiod value-999 : ", workPeriod)
+  console.log(`[WP value-999]: ${JSON.stringify(workPeriod)}`)
   await esClient.updateExtra({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     id: workPeriod.resourceBookingId,
