@@ -20,6 +20,7 @@ async function processCreate (message, transactionId) {
   // Find related resourceBooking
   const resourceBooking = await esClient.getExtra({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    transactionId,
     id: workPeriod.resourceBookingId
   })
   console.log(`[RB value-999] before update: ${JSON.stringify(resourceBooking)}`)
@@ -76,6 +77,7 @@ async function processUpdate (message, transactionId) {
   // find workPeriod in it's parent ResourceBooking
   let resourceBooking = await esClient.search({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    transactionId,
     body: {
       query: {
         nested: {
@@ -106,11 +108,12 @@ async function processUpdate (message, transactionId) {
       body: {
         doc: { workPeriods }
       },
-      refresh: constants.esRefreshOption
+      refresh: 'true'
     })
     // find workPeriod's new parent ResourceBooking
     resourceBooking = await esClient.getExtra({
       index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+      transactionId,
       id: data.resourceBookingId
     })
     // Get ResourceBooking's existing workPeriods
@@ -127,7 +130,7 @@ async function processUpdate (message, transactionId) {
       body: {
         doc: { workPeriods }
       },
-      refresh: constants.esRefreshOption
+      refresh: 'true'
     })
     return
   }
@@ -162,6 +165,7 @@ async function processDelete (message, transactionId) {
   // Find related ResourceBooking
   const resourceBooking = await esClient.search({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    transactionId,
     body: {
       query: {
         nested: {
