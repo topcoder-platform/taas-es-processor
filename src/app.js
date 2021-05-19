@@ -153,6 +153,7 @@ async function initConsumer () {
       subscriptions: topics,
       handler: async (messageSet, topic, partition) => {
         eventEmitter.emit('start_handling_message')
+        localLogger.debug(`Consumer handler. Topic: ${topic}, partition: ${partition}, message set length: ${messageSet.length}`)
         await dataHandler(messageSet, topic, partition)
         eventEmitter.emit('end_handling_message')
       }
