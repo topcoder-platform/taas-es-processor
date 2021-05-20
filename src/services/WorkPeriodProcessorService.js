@@ -108,7 +108,7 @@ async function processUpdate (message, transactionId) {
       body: {
         doc: { workPeriods }
       },
-      refresh: 'true'
+      refresh: constants.esRefreshOption
     })
     // find workPeriod's new parent ResourceBooking
     resourceBooking = await esClient.getExtra({
@@ -130,7 +130,7 @@ async function processUpdate (message, transactionId) {
       body: {
         doc: { workPeriods }
       },
-      refresh: 'true'
+      refresh: constants.esRefreshOption
     })
     return
   }
