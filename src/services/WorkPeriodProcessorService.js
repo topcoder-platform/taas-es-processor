@@ -37,7 +37,7 @@ async function processCreate (message, transactionId) {
     body: {
       doc: { workPeriods }
     },
-    refresh: true
+    refresh: constants.esRefreshOption
   })
 }
 
@@ -149,7 +149,7 @@ async function processUpdate (message, transactionId) {
     body: {
       doc: { workPeriods }
     },
-    refresh: true
+    refresh: constants.esRefreshOption
   })
 }
 
@@ -190,7 +190,7 @@ async function processDelete (message, transactionId) {
     body: {
       doc: { workPeriods }
     },
-    refresh: true
+    refresh: constants.esRefreshOption
   })
 }
 
