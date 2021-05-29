@@ -26,6 +26,7 @@ async function createIndex () {
             rateType: { type: 'keyword' },
             workload: { type: 'keyword' },
             skills: { type: 'keyword' },
+            roles: { type: 'keyword' },
             status: { type: 'keyword' },
             isApplicationPageActive: { type: 'boolean' },
             createdAt: { type: 'date' },
