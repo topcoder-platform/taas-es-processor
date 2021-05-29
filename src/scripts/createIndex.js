@@ -120,6 +120,16 @@ async function createIndex () {
                     challengeId: { type: 'keyword' },
                     amount: { type: 'float' },
                     status: { type: 'keyword' },
+                    statusDetails: {
+                      type: 'nested',
+                      properties: {
+                        errorMessage: { type: 'text' },
+                        errorCode: { type: 'integer' },
+                        retry: { type: 'integer' },
+                        step: { type: 'keyword' },
+                        challengeId: { type: 'keyword' }
+                      }
+                    },
                     billingAccountId: { type: 'integer' },
                     createdAt: { type: 'date' },
                     createdBy: { type: 'keyword' },
