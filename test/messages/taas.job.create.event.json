@@ -24,6 +24,12 @@
         "createdAt": "2020-11-05T19:00:16.268Z",
         "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
         "status": "sourcing",
-        "isApplicationPageActive": false
+        "isApplicationPageActive": false,
+        "minSalary": 100,
+        "maxSalary": 200,
+        "hoursPerWeek": 20,
+        "jobLocation": "Any location",
+        "jobTimezone": "GMT",
+        "currency": "USD"
     }
 }
