@@ -83,7 +83,8 @@ processCreate.schema = {
       updatedAt: Joi.date().allow(null),
       updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobStatus().required(),
-      isApplicationPageActive: Joi.boolean().required()
+      isApplicationPageActive: Joi.boolean().required(),
+      roleIds: Joi.array().items(Joi.string().uuid().required()).allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
