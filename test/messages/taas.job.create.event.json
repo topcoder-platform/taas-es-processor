@@ -24,6 +24,9 @@
         "createdAt": "2020-11-05T19:00:16.268Z",
         "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
         "status": "sourcing",
-        "isApplicationPageActive": false
+        "isApplicationPageActive": false,
+        "roleIds": [
+            "e7b7e818-40d4-4102-b486-09bdd21400b8"
+        ]
     }
 }
