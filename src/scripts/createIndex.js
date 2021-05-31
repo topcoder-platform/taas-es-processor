@@ -29,6 +29,7 @@ async function createIndex () {
             roles: { type: 'keyword' },
             status: { type: 'keyword' },
             isApplicationPageActive: { type: 'boolean' },
+            roleIds: { type: 'keyword' },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },
@@ -134,6 +135,39 @@ async function createIndex () {
                 updatedBy: { type: 'keyword' }
               }
             },
+            createdAt: { type: 'date' },
+            createdBy: { type: 'keyword' },
+            updatedAt: { type: 'date' },
+            updatedBy: { type: 'keyword' }
+          }
+        }
+      }
+    },
+    { index: config.get('esConfig.ES_INDEX_ROLE'),
+      body: {
+        mappings: {
+          properties: {
+            name: { type: 'keyword' },
+            description: { type: 'keyword' },
+            listOfSkills: { type: 'keyword' },
+            rates: {
+              properties: {
+                global: { type: 'integer' },
+                inCountry: { type: 'integer' },
+                offShore: { type: 'integer' },
+                rate30Global: { type: 'integer' },
+                rate30InCountry: { type: 'integer' },
+                rate30OffShore: { type: 'integer' },
+                rate20Global: { type: 'integer' },
+                rate20InCountry: { type: 'integer' },
+                rate20OffShore: { type: 'integer' }
+              }
+            },
+            numberOfMembers: { type: 'integer' },
+            numberOfMembersAvailable: { type: 'integer' },
+            imageUrl: { type: 'keyword' },
+            timeToCandidate: { type: 'integer' },
+            timeToInterview: { type: 'integer' },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },
