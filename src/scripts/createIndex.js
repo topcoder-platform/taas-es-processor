@@ -105,7 +105,8 @@ async function createIndex () {
               properties: {
                 id: { type: 'keyword' },
                 resourceBookingId: { type: 'keyword' },
-                userHandle: { type: 'keyword' },
+                userHandle: { type: 'keyword',
+                  normalizer: 'lowercaseNormalizer' },
                 projectId: { type: 'integer' },
                 userId: { type: 'keyword' },
                 startDate: { type: 'date', format: 'yyyy-MM-dd' },
@@ -179,7 +180,29 @@ async function createIndex () {
   ]
 
   for (const index of indices) {
-    await esClient.indices.create(index)
+    await esClient.indices.create({ index: index.index })
+    await esClient.indices.close({ index: index.index })
+    await esClient.indices.putSettings({
+      index: index.index,
+      body: {
+        settings: {
+          analysis: {
+            normalizer: {
+              lowercaseNormalizer: {
+                filter: ['lowercase']
+              }
+            }
+          }
+        }
+      }
+    })
+    await esClient.indices.open({ index: index.index })
+    await esClient.indices.putMapping({
+      index: index.index,
+      body: {
+        properties: index.body.mappings.properties
+      }
+    })
     logger.info({ component: 'createIndex', message: `ES Index ${index.index} creation succeeded!` })
   }
   process.exit(0)
