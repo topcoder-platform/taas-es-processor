@@ -26,6 +26,7 @@ async function createIndex () {
             rateType: { type: 'keyword' },
             workload: { type: 'keyword' },
             skills: { type: 'keyword' },
+            roles: { type: 'keyword' },
             status: { type: 'keyword' },
             isApplicationPageActive: { type: 'boolean' },
             minSalary: { type: 'integer' },
@@ -34,6 +35,7 @@ async function createIndex () {
             jobLocation: { type: 'keyword' },
             jobTimezone: { type: 'keyword' },
             currency: { type: 'keyword' },
+            roleIds: { type: 'keyword' },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
             updatedAt: { type: 'date' },
@@ -110,7 +112,8 @@ async function createIndex () {
               properties: {
                 id: { type: 'keyword' },
                 resourceBookingId: { type: 'keyword' },
-                userHandle: { type: 'keyword' },
+                userHandle: { type: 'keyword',
+                  normalizer: 'lowercaseNormalizer' },
                 projectId: { type: 'integer' },
                 userId: { type: 'keyword' },
                 startDate: { type: 'date', format: 'yyyy-MM-dd' },
@@ -147,11 +150,66 @@ async function createIndex () {
           }
         }
       }
+    },
+    { index: config.get('esConfig.ES_INDEX_ROLE'),
+      body: {
+        mappings: {
+          properties: {
+            name: { type: 'keyword' },
+            description: { type: 'keyword' },
+            listOfSkills: { type: 'keyword' },
+            rates: {
+              properties: {
+                global: { type: 'integer' },
+                inCountry: { type: 'integer' },
+                offShore: { type: 'integer' },
+                rate30Global: { type: 'integer' },
+                rate30InCountry: { type: 'integer' },
+                rate30OffShore: { type: 'integer' },
+                rate20Global: { type: 'integer' },
+                rate20InCountry: { type: 'integer' },
+                rate20OffShore: { type: 'integer' }
+              }
+            },
+            numberOfMembers: { type: 'integer' },
+            numberOfMembersAvailable: { type: 'integer' },
+            imageUrl: { type: 'keyword' },
+            timeToCandidate: { type: 'integer' },
+            timeToInterview: { type: 'integer' },
+            createdAt: { type: 'date' },
+            createdBy: { type: 'keyword' },
+            updatedAt: { type: 'date' },
+            updatedBy: { type: 'keyword' }
+          }
+        }
+      }
     }
   ]
 
   for (const index of indices) {
-    await esClient.indices.create(index)
+    await esClient.indices.create({ index: index.index })
+    await esClient.indices.close({ index: index.index })
+    await esClient.indices.putSettings({
+      index: index.index,
+      body: {
+        settings: {
+          analysis: {
+            normalizer: {
+              lowercaseNormalizer: {
+                filter: ['lowercase']
+              }
+            }
+          }
+        }
+      }
+    })
+    await esClient.indices.open({ index: index.index })
+    await esClient.indices.putMapping({
+      index: index.index,
+      body: {
+        properties: index.body.mappings.properties
+      }
+    })
     logger.info({ component: 'createIndex', message: `ES Index ${index.index} creation succeeded!` })
   }
   process.exit(0)

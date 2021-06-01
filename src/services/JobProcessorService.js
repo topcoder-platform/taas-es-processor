@@ -78,6 +78,7 @@ processCreate.schema = {
       rateType: Joi.rateType().allow(null),
       workload: Joi.workload().allow(null),
       skills: Joi.array().items(Joi.string().uuid()).required(),
+      roles: Joi.array().items(Joi.string().uuid()).allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
@@ -89,7 +90,8 @@ processCreate.schema = {
       hoursPerWeek: Joi.number().integer().required(),
       jobLocation: Joi.string().required(),
       jobTimezone: Joi.string().required(),
-      currency: Joi.string().required()
+      currency: Joi.string().required(),
+      roleIds: Joi.array().items(Joi.string().uuid().required()).allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
