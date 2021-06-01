@@ -25,6 +25,12 @@
         "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
         "status": "sourcing",
         "isApplicationPageActive": false,
+        "minSalary": 100,
+        "maxSalary": 200,
+        "hoursPerWeek": 20,
+        "jobLocation": "Any location",
+        "jobTimezone": "GMT",
+        "currency": "USD",
         "roleIds": [
             "e7b7e818-40d4-4102-b486-09bdd21400b8"
         ]

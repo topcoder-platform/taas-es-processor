@@ -85,6 +85,12 @@ processCreate.schema = {
       updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobStatus().required(),
       isApplicationPageActive: Joi.boolean().required(),
+      minSalary: Joi.number().integer().required(),
+      maxSalary: Joi.number().integer().required(),
+      hoursPerWeek: Joi.number().integer().required(),
+      jobLocation: Joi.string().required(),
+      jobTimezone: Joi.string().required(),
+      currency: Joi.string().required(),
       roleIds: Joi.array().items(Joi.string().uuid().required()).allow(null)
     }).required()
   }).required(),

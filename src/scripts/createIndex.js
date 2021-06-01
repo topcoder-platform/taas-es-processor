@@ -29,6 +29,12 @@ async function createIndex () {
             roles: { type: 'keyword' },
             status: { type: 'keyword' },
             isApplicationPageActive: { type: 'boolean' },
+            minSalary: { type: 'integer' },
+            maxSalary: { type: 'integer' },
+            hoursPerWeek: { type: 'integer' },
+            jobLocation: { type: 'keyword' },
+            jobTimezone: { type: 'keyword' },
+            currency: { type: 'keyword' },
             roleIds: { type: 'keyword' },
             createdAt: { type: 'date' },
             createdBy: { type: 'keyword' },
@@ -48,6 +54,7 @@ async function createIndex () {
             status: { type: 'keyword' },
             externalId: { type: 'keyword' },
             resume: { type: 'text' },
+            remark: { type: 'keyword' },
             interviews: {
               type: 'nested',
               properties: {
