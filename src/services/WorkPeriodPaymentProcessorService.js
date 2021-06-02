@@ -65,7 +65,7 @@ processCreate.schema = {
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       workPeriodId: Joi.string().uuid().required(),
-      challengeId: Joi.string().uuid().required(),
+      challengeId: Joi.string().uuid().allow(null),
       amount: Joi.number().greater(0).allow(null),
       status: Joi.workPeriodPaymentStatus().required(),
       billingAccountId: Joi.number().allow(null),
