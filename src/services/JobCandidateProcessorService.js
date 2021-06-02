@@ -101,7 +101,8 @@ processCreate.schema = {
       updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobCandidateStatus().required(),
       externalId: Joi.string().allow(null),
-      resume: Joi.string().uri().allow(null)
+      resume: Joi.string().uri().allow(null),
+      remark: Joi.string().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()

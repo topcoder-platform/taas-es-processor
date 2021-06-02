@@ -2,7 +2,7 @@
 
 ## Create documents in ES
 
-- Run the following commands to create `Job`, `JobCandidate`, `Interview`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment` documents in ES.
+- Run the following commands to create `Job`, `JobCandidate`, `Interview`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment`, `Role` documents in ES.
 
   ``` bash
   # for Job
@@ -17,12 +17,14 @@
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiod.create < test/messages/taas.workperiod.create.event.json
   # for WorkPeriodPayment
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiodpayment.create < test/messages/taas.workperiodpayment.create.event.json
+  # for Role
+  docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.role.requested < test/messages/taas.role.create.event.json
   ```
 
 - Run `npm run view-data <model-name-here>` to see if documents were created.
 
 ## Update documents in ES
-- Run the following commands to update `Job`, `JobCandidate`, `Interview`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment` documents in ES.
+- Run the following commands to update `Job`, `JobCandidate`, `Interview`, `ResourceBooking`, `WorkPeriod`, `WorkPeriodPayment`, `Role` documents in ES.
 
   ``` bash
   # for Job
@@ -37,12 +39,14 @@
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiod.update < test/messages/taas.workperiod.update.event.json
   # for WorkPeriodPayment
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiodpayment.update < test/messages/taas.workperiodpayment.update.event.json
+  # for Role
+  docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.role.update < test/messages/taas.role.update.event.json
   ```
 
 - Run `npm run view-data <model-name-here>` to see if documents were updated.
 
 ## Delete documents in ES
-- Run the following commands to delete `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod` documents in ES.
+- Run the following commands to delete `Job`, `JobCandidate`, `ResourceBooking`, `WorkPeriod`, `Role` documents in ES.
 
   ``` bash
   # for Job
@@ -53,6 +57,8 @@
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.resourcebooking.delete < test/messages/taas.resourcebooking.delete.event.json
   # for WorkPeriod
   docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.workperiod.delete < test/messages/taas.workperiod.delete.event.json
+  # for Role
+  docker exec -i taas-es-processor_kafka /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic taas.role.delete < test/messages/taas.role.delete.event.json
   ```
 
 - Run `npm run view-data <model-name-here>` to see if documents were deleted.
