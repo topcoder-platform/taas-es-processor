@@ -155,9 +155,11 @@ async function createIndex () {
       body: {
         mappings: {
           properties: {
-            name: { type: 'keyword' },
+            name: { type: 'keyword',
+              normalizer: 'lowercaseNormalizer' },
             description: { type: 'keyword' },
-            listOfSkills: { type: 'keyword' },
+            listOfSkills: { type: 'keyword',
+              normalizer: 'lowercaseNormalizer' },
             rates: {
               properties: {
                 global: { type: 'integer' },
