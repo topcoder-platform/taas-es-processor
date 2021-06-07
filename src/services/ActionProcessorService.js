@@ -6,13 +6,10 @@ const Joi = require('@hapi/joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const config = require('config')
-const _ = require('lodash')
 
 const localLogger = {
   debug: ({ context, message }) => logger.debug({ component: 'ActionProcessorService', context, message })
 }
-
-const retryMap = {}
 
 /**
   * Process retry operation message
@@ -25,9 +22,10 @@ async function processRetry (message, transactionId) {
     return
   }
   const { topicServiceMapping } = require('../app')
+  const retry = message.payload.retry
   message.topic = message.payload.originalTopic
   message.payload = message.payload.originalPayload
-  await topicServiceMapping[message.topic](message, transactionId)
+  await topicServiceMapping[message.topic](message, transactionId, { retry })
 }
 
 processRetry.schema = {
@@ -49,22 +47,21 @@ processRetry.schema = {
   * Analyzes the failed process and sends it to bus api to be received again.
   * @param {String} originalTopic the failed topic name
   * @param {Object} originalPayload the payload
-  * @param {String} id the id that was the subject of the operation failed
+  * @param {Number} retry how many times has it been retried
   */
-async function processCreate (originalTopic, originalPayload, id) {
-  const retry = _.defaultTo(retryMap[id], 0) + 1
+async function processCreate (originalTopic, originalPayload, retry) {
+  retry = retry + 1
   if (retry > config.MAX_RETRY) {
-    localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${id} exceeds the max retry: ${config.MAX_RETRY} - ignored` })
+    localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${originalPayload.id} exceeds the max retry: ${config.MAX_RETRY} - ignored` })
     return
   }
-  localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${id}` })
-  retryMap[id] = retry
+  localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${originalPayload.id}` })
   const payload = {
     originalTopic,
     originalPayload,
     retry
   }
-  setTimeout(async function () {
+  setTimeout(async () => {
     await helper.postEvent(config.topics.TAAS_ACTION_RETRY_TOPIC, payload)
   }, 2 ** retry * config.BASE_RETRY_DELAY)
 }
@@ -72,7 +69,7 @@ async function processCreate (originalTopic, originalPayload, id) {
 processCreate.schema = {
   originalTopic: Joi.string().required(),
   originalPayload: Joi.object().required(),
-  id: Joi.string().uuid().required()
+  retry: Joi.number().integer().min(0).required()
 }
 
 module.exports = {

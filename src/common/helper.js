@@ -12,7 +12,6 @@ const _ = require('lodash')
 const { Mutex } = require('async-mutex')
 const m2mAuth = require('tc-core-library-js').auth.m2m
 const busApi = require('@topcoder-platform/topcoder-bus-api-wrapper')
-const ActionProcessorService = require('../services/ActionProcessorService')
 
 AWS.config.region = config.esConfig.AWS_REGION
 
@@ -185,10 +184,11 @@ async function postMessageViaWebhook (webhook, message) {
  * Calls ActionProcessorService to attempt to retry failed process
  * @param {String} topic the failed topic name
  * @param {Object} payload the payload
- * @param {String} id the id that was the subject of the operation failed
+ * @param {String} retry how many times has it been retried
  */
-async function retryFailedProcess (topic, payload, id) {
-  await ActionProcessorService.processCreate(topic, payload, id)
+async function retryFailedProcess (topic, payload, retry) {
+  const ActionProcessorService = require('../services/ActionProcessorService')
+  await ActionProcessorService.processCreate(topic, payload, retry)
 }
 
 let busApiClient

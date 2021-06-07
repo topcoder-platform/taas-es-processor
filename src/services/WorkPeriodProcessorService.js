@@ -14,8 +14,9 @@ const esClient = helper.getESClient()
  * Process create entity message
  * @param {Object} message the kafka message
  * @param {String} transactionId
+ * @param {Object} options
  */
-async function processCreate (message, transactionId) {
+async function processCreate (message, transactionId, options) {
   const workPeriod = message.payload
   // Find related resourceBooking
   let resourceBooking
@@ -30,7 +31,7 @@ async function processCreate (message, transactionId) {
     // it has not yet been created. We should send a retry request.
     if (err.httpStatus === 404) {
       logger.logFullError(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
-      await helper.retryFailedProcess(message.topic, workPeriod, workPeriod.resourceBookingId)
+      await helper.retryFailedProcess(message.topic, workPeriod, options.retry)
       return
     } else {
       throw err
@@ -78,7 +79,12 @@ processCreate.schema = {
       updatedBy: Joi.string().uuid().allow(null)
     }).required()
   }).required(),
-  transactionId: Joi.string().required()
+  transactionId: Joi.string().required(),
+  options: Joi.object().keys({
+    retry: Joi.number().integer().min(0).default(0)
+  }).default({
+    retry: 0
+  })
 }
 
 /**
