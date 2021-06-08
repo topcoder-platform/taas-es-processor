@@ -180,17 +180,6 @@ async function postMessageViaWebhook (webhook, message) {
   await request.post(webhook).send(message)
 }
 
-/**
- * Calls ActionProcessorService to attempt to retry failed process
- * @param {String} topic the failed topic name
- * @param {Object} payload the payload
- * @param {String} retry how many times has it been retried
- */
-async function retryFailedProcess (topic, payload, retry) {
-  const ActionProcessorService = require('../services/ActionProcessorService')
-  await ActionProcessorService.processCreate(topic, payload, retry)
-}
-
 let busApiClient
 
 /**
@@ -242,7 +231,6 @@ module.exports = {
   checkEsMutexRelease,
   getM2MToken,
   postMessageViaWebhook,
-  retryFailedProcess,
   getBusApiClient,
   postEvent
 }

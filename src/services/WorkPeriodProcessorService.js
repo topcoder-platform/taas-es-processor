@@ -9,6 +9,7 @@ const constants = require('../common/constants')
 const config = require('config')
 const _ = require('lodash')
 const esClient = helper.getESClient()
+const ActionProcessorService = require('../services/ActionProcessorService')
 
 /**
  * Process create entity message
@@ -31,7 +32,7 @@ async function processCreate (message, transactionId, options) {
     // it has not yet been created. We should send a retry request.
     if (err.httpStatus === 404) {
       logger.logFullError(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
-      await helper.retryFailedProcess(message.topic, workPeriod, options.retry)
+      await ActionProcessorService.processCreate(message.topic, workPeriod, options.retry)
       return
     } else {
       throw err
