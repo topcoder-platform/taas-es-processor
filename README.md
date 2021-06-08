@@ -38,6 +38,9 @@ The following parameters can be set in config files or in env variables:
 - `topics.TAAS_INTERVIEW_REQUEST_TOPIC`: the request interview entity Kafka message topic
 - `topics.TAAS_INTERVIEW_UPDATE_TOPIC`: the update interview entity Kafka message topic
 - `topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC`: the bulk update interview entity Kafka message topic
+- `topics.TAAS_ROLE_CREATE_TOPIC`: the create role entity Kafka message topic
+- `topics.TAAS_ROLE_UPDATE_TOPIC`: the update role entity Kafka message topic
+- `topics.TAAS_ROLE_DELETE_TOPIC`: the delete role entity Kafka message topic
 - `esConfig.HOST`: Elasticsearch host
 - `esConfig.AWS_REGION`: The Amazon region to use when using AWS Elasticsearch service
 - `esConfig.ELASTICCLOUD.id`: The elastic cloud id, if your elasticsearch instance is hosted on elastic cloud. DO NOT provide a value for ES_HOST if you are using this
@@ -46,6 +49,7 @@ The following parameters can be set in config files or in env variables:
 - `esConfig.ES_INDEX_JOB`: the index name for job
 - `esConfig.ES_INDEX_JOB_CANDIDATE`: the index name for job candidate
 - `esConfig.ES_INDEX_RESOURCE_BOOKING`: the index name for resource booking
+- `esConfig.ES_INDEX_ROLE`: the index name for role
 
 - `auth0.AUTH0_URL`: Auth0 URL, used to get TC M2M token
 - `auth0.AUTH0_AUDIENCE`: Auth0 audience, used to get TC M2M token
