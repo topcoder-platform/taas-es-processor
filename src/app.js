@@ -16,6 +16,7 @@ const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorServic
 const InterviewProcessorService = require('./services/InterviewProcessorService')
 const WorkPeriodPaymentProcessorService = require('./services/WorkPeriodPaymentProcessorService')
 const RoleProcessorService = require('./services/RoleProcessorService')
+const ActionProcessorService = require('./services/ActionProcessorService')
 const Mutex = require('async-mutex').Mutex
 const events = require('events')
 
@@ -23,7 +24,6 @@ const eventEmitter = new events.EventEmitter()
 
 // healthcheck listening port
 process.env.PORT = config.PORT
-
 const localLogger = {
   info: (message) => logger.info({ component: 'app', message }),
   debug: (message) => logger.debug({ component: 'app', message }),
@@ -57,7 +57,9 @@ const topicServiceMapping = {
   // role
   [config.topics.TAAS_ROLE_CREATE_TOPIC]: RoleProcessorService.processCreate,
   [config.topics.TAAS_ROLE_UPDATE_TOPIC]: RoleProcessorService.processUpdate,
-  [config.topics.TAAS_ROLE_DELETE_TOPIC]: RoleProcessorService.processDelete
+  [config.topics.TAAS_ROLE_DELETE_TOPIC]: RoleProcessorService.processDelete,
+  // action
+  [config.topics.TAAS_ACTION_RETRY_TOPIC]: ActionProcessorService.processRetry
 }
 
 // Start kafka consumer
@@ -179,5 +181,6 @@ if (!module.parent) {
 
 module.exports = {
   initConsumer,
-  eventEmitter
+  eventEmitter,
+  topicServiceMapping
 }
