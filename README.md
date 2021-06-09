@@ -110,6 +110,22 @@ The following parameters can be set in config files or in env variables:
     npm run lint:fix
     ```
 
+4. Local config
+
+   In the `taas-es-processor` root directory create `.env` file with the next environment variables. Values for **Auth0 config** should be shared with you on the forum.<br>
+
+      ```bash
+      # Auth0 config
+      AUTH0_URL=
+      AUTH0_AUDIENCE=
+      AUTH0_AUDIENCE_UBAHN=
+      AUTH0_CLIENT_ID=
+      AUTH0_CLIENT_SECRET=
+      ```
+
+      - Values from this file would be automatically used by many `npm` commands.
+      - ⚠️ Never commit this file or its copy to the repository!
+
 5. Start the processor and health check dropin
 
     ```bash
