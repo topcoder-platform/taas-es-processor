@@ -225,7 +225,18 @@ async function postEvent (topic, payload) {
   await client.postEvent(message)
 }
 
+/**
+ * Sleep for a given number of milliseconds.
+ *
+ * @param {Number} milliseconds the sleep time
+ * @returns {undefined}
+ */
+async function sleep (milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
 module.exports = {
+  sleep,
   getKafkaOptions,
   getESClient,
   checkEsMutexRelease,

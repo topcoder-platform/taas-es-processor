@@ -31,8 +31,14 @@ async function processCreate (message, transactionId, options) {
     // if resource booking was not found, it may be because
     // it has not yet been created. We should send a retry request.
     if (err.httpStatus === 404) {
-      logger.logFullError(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
-      await ActionProcessorService.processCreate(message.topic, workPeriod, options.retry)
+      const schedulePromise = ActionProcessorService.scheduleRetry(message.topic, workPeriod, options.retry)
+      if (schedulePromise) {
+        // as retry was scheduled, log this error as warning
+        logger.logFullWarning(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
+      } else {
+        // as retry was not scheduled, then log this error as error
+        logger.logFullError(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
+      }
       return
     } else {
       throw err

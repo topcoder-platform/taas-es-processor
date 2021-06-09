@@ -48,33 +48,36 @@ processRetry.schema = {
   * @param {String} originalTopic the failed topic name
   * @param {Object} originalPayload the payload
   * @param {Number} retry how many times has it been retried
+  *
+  * @returns {Promise|null} returns Promise which would be resolved when retry event sent to Kafka,
+  *                         or `null` if it would not be scheduled
   */
-async function processCreate (originalTopic, originalPayload, retry) {
+function scheduleRetry (originalTopic, originalPayload, retry) {
   retry = retry + 1
   if (retry > config.MAX_RETRY) {
-    localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${originalPayload.id} exceeds the max retry: ${config.MAX_RETRY} - ignored` })
+    localLogger.debug({ context: 'scheduleRetry', message: `retry: ${retry} for topic: ${originalTopic} id: ${originalPayload.id} exceeds the max retry: ${config.MAX_RETRY} - ignored` })
     return
   }
-  localLogger.debug({ context: 'processCreate', message: `retry: ${retry} for ${originalPayload.id}` })
+
+  localLogger.debug({ context: 'scheduleRetry', message: `retry: ${retry} for topic: ${originalTopic} id: ${originalPayload.id}` })
+
   const payload = {
     originalTopic,
     originalPayload,
     retry
   }
-  setTimeout(async () => {
-    await helper.postEvent(config.topics.TAAS_ACTION_RETRY_TOPIC, payload)
-  }, 2 ** retry * config.BASE_RETRY_DELAY)
-}
 
-processCreate.schema = {
-  originalTopic: Joi.string().required(),
-  originalPayload: Joi.object().required(),
-  retry: Joi.number().integer().min(0).required()
+  return helper.sleep(2 ** retry * config.BASE_RETRY_DELAY).then(() =>
+    helper.postEvent(config.topics.TAAS_ACTION_RETRY_TOPIC, payload)
+  )
 }
 
 module.exports = {
-  processRetry,
-  processCreate
+  processRetry
 }
 
 logger.buildService(module.exports, 'ActionProcessorService')
+
+// we don't want to wrap this method into service wrappers
+// because it would transform this method to `async` while we want to keep it sync
+module.exports.scheduleRetry = scheduleRetry
