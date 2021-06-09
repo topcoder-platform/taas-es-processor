@@ -118,7 +118,6 @@ The following parameters can be set in config files or in env variables:
       # Auth0 config
       AUTH0_URL=
       AUTH0_AUDIENCE=
-      AUTH0_AUDIENCE_UBAHN=
       AUTH0_CLIENT_ID=
       AUTH0_CLIENT_SECRET=
       ```
