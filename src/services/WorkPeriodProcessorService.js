@@ -9,20 +9,36 @@ const constants = require('../common/constants')
 const config = require('config')
 const _ = require('lodash')
 const esClient = helper.getESClient()
+const ActionProcessorService = require('../services/ActionProcessorService')
 
 /**
  * Process create entity message
  * @param {Object} message the kafka message
  * @param {String} transactionId
+ * @param {Object} options
  */
-async function processCreate (message, transactionId) {
+async function processCreate (message, transactionId, options) {
   const workPeriod = message.payload
   // Find related resourceBooking
-  const resourceBooking = await esClient.getExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    transactionId,
-    id: workPeriod.resourceBookingId
-  })
+  let resourceBooking
+  try {
+    resourceBooking = await esClient.getExtra({
+      index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+      transactionId,
+      id: workPeriod.resourceBookingId
+    })
+  } catch (err) {
+    // if resource booking was not found, it may be because
+    // it has not yet been created. We should send a retry request.
+    if (err.httpStatus === 404) {
+      logger.logFullError(err, { component: 'WorkPeriodProcessorService', context: 'processCreate' })
+      await ActionProcessorService.processCreate(message.topic, workPeriod, options.retry)
+      return
+    } else {
+      throw err
+    }
+  }
+
   console.log(`[RB value-999] before update: ${JSON.stringify(resourceBooking)}`)
   // Get ResourceBooking's existing workPeriods
   const workPeriods = _.isArray(resourceBooking.body.workPeriods) ? resourceBooking.body.workPeriods : []
@@ -64,7 +80,12 @@ processCreate.schema = {
       updatedBy: Joi.string().uuid().allow(null)
     }).required()
   }).required(),
-  transactionId: Joi.string().required()
+  transactionId: Joi.string().required(),
+  options: Joi.object().keys({
+    retry: Joi.number().integer().min(0).default(0)
+  }).default({
+    retry: 0
+  })
 }
 
 /**
