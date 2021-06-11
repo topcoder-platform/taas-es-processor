@@ -69,6 +69,13 @@ processCreate.schema = {
       amount: Joi.number().greater(0).allow(null),
       status: Joi.workPeriodPaymentStatus().required(),
       billingAccountId: Joi.number().allow(null),
+      statusDetails: Joi.object().keys({
+        errorMessage: Joi.string().required(),
+        errorCode: Joi.number().integer().allow(null),
+        retry: Joi.number().integer().allow(null),
+        step: Joi.string().allow(null),
+        challengeId: Joi.string().uuid().allow(null)
+      }).unknown(true).allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),

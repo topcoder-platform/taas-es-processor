@@ -18,7 +18,7 @@ Joi.title = () => Joi.string().max(128)
 Joi.paymentStatus = () => Joi.string().valid('pending', 'partially-completed', 'completed', 'cancelled')
 Joi.xaiTemplate = () => Joi.string().valid(...allowedXAITemplates)
 Joi.interviewStatus = () => Joi.string().valid(...allowedInterviewStatuses)
-Joi.workPeriodPaymentStatus = () => Joi.string().valid('completed', 'scheduled', 'cancelled')
+Joi.workPeriodPaymentStatus = () => Joi.string().valid('completed', 'scheduled', 'in-progress', 'failed', 'cancelled')
 // Empty string is not allowed by Joi by default and must be enabled with allow('').
 // See https://joi.dev/api/?v=17.3.0#string fro details why it's like this.
 // In many cases we would like to allow empty string to make it easier to create UI for editing data.
