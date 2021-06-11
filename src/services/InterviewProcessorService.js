@@ -56,6 +56,7 @@ processRequestInterview.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       xaiId: Joi.string().allow(null),
@@ -176,6 +177,7 @@ processBulkUpdateInterviews.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().pattern(
       Joi.string().uuid(), // key - jobCandidateId
       Joi.object().pattern(
