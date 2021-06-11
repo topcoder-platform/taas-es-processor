@@ -17,7 +17,8 @@ const services = {
   JobCandidateProcessorService: require('../../src/services/JobCandidateProcessorService'),
   ResourceBookingProcessorService: require('../../src/services/ResourceBookingProcessorService'),
   WorkPeriodProcessorService: require('../../src/services/WorkPeriodProcessorService'),
-  WorkPeriodPaymentProcessorService: require('../../src/services/WorkPeriodPaymentProcessorService')
+  WorkPeriodPaymentProcessorService: require('../../src/services/WorkPeriodPaymentProcessorService'),
+  ActionProcessorService: require('../../src/services/ActionProcessorService')
 }
 
 // random transaction id here
@@ -172,12 +173,9 @@ describe('General Logic Tests', () => {
       )
     })
     it(`Failure - processCreate - ${modelInSpaceCase} not found`, async () => {
-      try {
-        await services[`${model}ProcessorService`].processCreate(testData.messages[model].create.message, transactionId)
-        throw new Error()
-      } catch (err) {
-        should.equal(err.message, `id: ${testData.messages[parentModel].create.message.payload.id} "${index}" not found`)
-      }
+      const processCreateStub = sandbox.stub(services.ActionProcessorService, 'processCreate').callsFake(() => {})
+      await services[`${model}ProcessorService`].processCreate(testData.messages[model].create.message, transactionId)
+      should.equal(processCreateStub.getCall(0).args[0], testData.messages[model].create.topic)
     })
 
     it(`Failure - processUpdate - ${modelInSpaceCase} not found`, async () => {

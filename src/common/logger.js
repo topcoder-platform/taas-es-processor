@@ -57,6 +57,24 @@ logger.logFullError = (err, context = {}) => {
 }
 
 /**
+ * Log warning details
+ * @param {Object} err the error
+ * @param {Object} context contains extra info about errors
+ */
+logger.logFullWarning = (err, context = {}) => {
+  if (!err) {
+    return
+  }
+  if (err.logged) {
+    return
+  }
+  const signature = context.signature ? `${context.signature} : ` : ''
+  const errMessage = err.message || util.inspect(err).split('\n')[0]
+  logger.warn({ ..._.pick(context, ['component', 'context']), message: `${signature}${errMessage}` })
+  err.logged = true
+}
+
+/**
  * Remove invalid properties from the object and hide long arrays
  * @param {Object} obj the object
  * @returns {Object} the new object with removed properties

@@ -89,9 +89,9 @@ processCreate.schema = {
       minSalary: Joi.number().integer().allow(null),
       maxSalary: Joi.number().integer().allow(null),
       hoursPerWeek: Joi.number().integer().allow(null),
-      jobLocation: Joi.string().allow(null),
-      jobTimezone: Joi.string().allow(null),
-      currency: Joi.string().allow(null),
+      jobLocation: Joi.string().allow(null).allow(''),
+      jobTimezone: Joi.string().allow(null).allow(''),
+      currency: Joi.string().allow(null).allow(''),
       roleIds: Joi.array().items(Joi.string().uuid().required()).allow(null)
     }).required()
   }).required(),
