@@ -86,27 +86,31 @@ async function processCreate (message, transactionId) {
 }
 
 processCreate.schema = {
-  message: Joi.object().keys({
-    topic: Joi.string().required(),
-    originator: Joi.string().required(),
-    timestamp: Joi.date().required(),
-    'mime-type': Joi.string().required(),
-    payload: Joi.object().keys({
-      id: Joi.string().uuid().required(),
-      jobId: Joi.string().uuid().required(),
-      userId: Joi.string().uuid().required(),
-      createdAt: Joi.date().required(),
-      createdBy: Joi.string().uuid().required(),
-      updatedAt: Joi.date().allow(null),
-      updatedBy: Joi.string().uuid().allow(null),
-      status: Joi.jobCandidateStatus().required(),
-      externalId: Joi.string().allow(null),
-      resume: Joi.string().uri().allow(null),
-      remark: Joi.string().allow(null)
-    }).required()
-  }).required(),
-  transactionId: Joi.string().required()
-}
+  message: Joi.object()
+    .keys({
+      topic: Joi.string().required(),
+      originator: Joi.string().required(),
+      timestamp: Joi.date().required(),
+      "mime-type": Joi.string().required(),
+      payload: Joi.object()
+        .keys({
+          id: Joi.string().uuid().required(),
+          jobId: Joi.string().uuid().required(),
+          userId: Joi.string().uuid().required(),
+          createdAt: Joi.date().required(),
+          createdBy: Joi.string().uuid().required(),
+          updatedAt: Joi.date().allow(null),
+          updatedBy: Joi.string().uuid().allow(null),
+          status: Joi.jobCandidateStatus().required(),
+          externalId: Joi.string().allow(null),
+          resume: Joi.string().uri().allow(null).allow(''),
+          remark: Joi.string().allow(null).allow('')
+        })
+        .required(),
+    })
+    .required(),
+  transactionId: Joi.string().required(),
+};
 
 /**
  * Process update entity message
