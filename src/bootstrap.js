@@ -9,7 +9,7 @@ const allowedInterviewStatuses = _.values(Interview.Status)
 
 global.Promise = require('bluebird')
 
-Joi.rateType = () => Joi.string().valid('hourly', 'daily', 'weekly', 'monthly','annual')
+Joi.rateType = () => Joi.string().valid('hourly', 'daily', 'weekly', 'monthly', 'annual')
 Joi.jobStatus = () => Joi.string().valid('sourcing', 'in-review', 'assigned', 'closed', 'cancelled')
 Joi.resourceBookingStatus = () => Joi.string().valid('placed', 'closed', 'cancelled')
 Joi.jobCandidateStatus = () => Joi.string().valid('open', 'placed', 'selected', 'client rejected - screening', 'client rejected - interview', 'rejected - other', 'cancelled', 'interview', 'topcoder-rejected', 'applied', 'rejected-pre-screen', 'skills-test', 'skills-test', 'phone-screen', 'job-closed', 'offered')

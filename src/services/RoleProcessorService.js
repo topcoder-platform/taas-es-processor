@@ -32,6 +32,7 @@ processCreate.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       name: Joi.string().max(50).required(),
@@ -103,6 +104,7 @@ processDelete.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required()
     }).required()
