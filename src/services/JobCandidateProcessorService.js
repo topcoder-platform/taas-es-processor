@@ -91,7 +91,7 @@ processCreate.schema = {
       topic: Joi.string().required(),
       originator: Joi.string().required(),
       timestamp: Joi.date().required(),
-      "mime-type": Joi.string().required(),
+      'mime-type': Joi.string().required(),
       key: Joi.string().allow(null),
       payload: Joi.object()
         .keys({
@@ -107,10 +107,10 @@ processCreate.schema = {
           resume: Joi.string().uri().allow(null).allow(''),
           remark: Joi.string().allow(null).allow('')
         })
-        .required(),
+        .required()
     })
     .required(),
-  transactionId: Joi.string().required(),
+  transactionId: Joi.string().required()
 }
 
 /**
