@@ -20,7 +20,9 @@ The following parameters can be set in config files or in env variables:
 - `KAFKA_CLIENT_CERT_KEY`: Kafka connection private key, optional;
     if not provided, then SSL connection is not used, direct insecure connection is used;
     if provided, it can be either path to private key file or private key content
+- `KAFKA_MESSAGE_ORIGINATOR`: The originator value for the kafka messages
 - `KAFKA_GROUP_ID`: the Kafka group id
+- `topics.KAFKA_ERROR_TOPIC`: the error topic at which bus api will publish any errors
 - `topics.TAAS_JOB_CREATE_TOPIC`: the create job entity Kafka message topic
 - `topics.TAAS_JOB_UPDATE_TOPIC`: the update job entity Kafka message topic
 - `topics.TAAS_JOB_DELETE_TOPIC`: the delete job entity Kafka message topic
@@ -33,6 +35,18 @@ The following parameters can be set in config files or in env variables:
 - `topics.TAAS_WORK_PERIOD_CREATE_TOPIC`: the create work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_UPDATE_TOPIC`: the update work period entity Kafka message topic
 - `topics.TAAS_WORK_PERIOD_DELETE_TOPIC`: the delete work period entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC`: the create work period payment entity Kafka message topic
+- `topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC`: the update work period payment entity Kafka message topic
+- `topics.TAAS_INTERVIEW_REQUEST_TOPIC`: the request interview entity Kafka message topic
+- `topics.TAAS_INTERVIEW_UPDATE_TOPIC`: the update interview entity Kafka message topic
+- `topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC`: the bulk update interview entity Kafka message topic
+- `topics.TAAS_ROLE_CREATE_TOPIC`: the create role entity Kafka message topic
+- `topics.TAAS_ROLE_UPDATE_TOPIC`: the update role entity Kafka message topic
+- `topics.TAAS_ROLE_DELETE_TOPIC`: the delete role entity Kafka message topic
+- `topics.TAAS_ACTION_RETRY_TOPIC`: the retry process Kafka message topic
+- `MAX_RETRY`: maximum allowed retry count for failed operations for sending `taas.action.retry` message
+- `BASE_RETRY_DELAY`: base amount of retry delay (ms) for failed operations
+- `BUSAPI_URL`: Topcoder Bus API URL
 - `esConfig.HOST`: Elasticsearch host
 - `esConfig.AWS_REGION`: The Amazon region to use when using AWS Elasticsearch service
 - `esConfig.ELASTICCLOUD.id`: The elastic cloud id, if your elasticsearch instance is hosted on elastic cloud. DO NOT provide a value for ES_HOST if you are using this
@@ -41,13 +55,14 @@ The following parameters can be set in config files or in env variables:
 - `esConfig.ES_INDEX_JOB`: the index name for job
 - `esConfig.ES_INDEX_JOB_CANDIDATE`: the index name for job candidate
 - `esConfig.ES_INDEX_RESOURCE_BOOKING`: the index name for resource booking
-- `esConfig.ES_INDEX_WORK_PERIOD`: the index name for work period
+- `esConfig.ES_INDEX_ROLE`: the index name for role
 
 - `auth0.AUTH0_URL`: Auth0 URL, used to get TC M2M token
 - `auth0.AUTH0_AUDIENCE`: Auth0 audience, used to get TC M2M token
 - `auth0.AUTH0_CLIENT_ID`: Auth0 client id, used to get TC M2M token
 - `auth0.AUTH0_CLIENT_SECRET`: Auth0 client secret, used to get TC M2M token
 - `auth0.AUTH0_PROXY_SERVER_URL`: Proxy Auth0 URL, used to get TC M2M token
+- `auth0.TOKEN_CACHE_TIME`: Auth0 token cache time, used to get TC M2M token
 
 - `zapier.ZAPIER_COMPANYID_SLUG`: your company id in zapier; numeric value
 - `zapier.ZAPIER_CONTACTID_SLUG`: your contact id in zapier; numeric value
@@ -75,7 +90,13 @@ The following parameters can be set in config files or in env variables:
 
 ## Local deployment
 
-1. Make sure that Kafka and Elasticsearch is running as per instructions above.
+0. Make sure that Kafka and Elasticsearch is running as per instructions above.
+
+1. Make sure to use Node v12+ by command `node -v`. We recommend using [NVM](https://github.com/nvm-sh/nvm) to quickly switch to the right version:
+
+   ```bash
+   nvm use
+   ```
 
 2. From the project root directory, run the following command to install the dependencies
 
@@ -94,6 +115,21 @@ The following parameters can be set in config files or in env variables:
     ```bash
     npm run lint:fix
     ```
+
+4. Local config
+
+   In the `taas-es-processor` root directory create `.env` file with the next environment variables. Values for **Auth0 config** should be shared with you on the forum.<br>
+
+      ```bash
+      # Auth0 config
+      AUTH0_URL=
+      AUTH0_AUDIENCE=
+      AUTH0_CLIENT_ID=
+      AUTH0_CLIENT_SECRET=
+      ```
+
+      - Values from this file would be automatically used by many `npm` commands.
+      - ⚠️ Never commit this file or its copy to the repository!
 
 5. Start the processor and health check dropin
 

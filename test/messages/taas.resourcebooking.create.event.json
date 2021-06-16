@@ -1,1 +1,21 @@
-{"topic":"taas.resourcebooking.create","originator":"taas-api","timestamp":"2020-11-05T19:00:25.038Z","mime-type":"application/json","payload":{"projectId":21,"userId":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","jobId":"ffbc24f7-301e-48d3-bf01-c056916056a2","startDate":"2020-09-27T04:17:23.131Z","endDate":"2020-09-27T04:17:23.131Z","memberRate":13.23,"customerRate":13,"rateType":"hourly","id":"60d97713-8621-476e-b006-7cb9589c7777","createdAt":"2020-11-05T19:00:23.036Z","createdBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","status":"sourcing"}}
+{
+    "topic": "taas.resourcebooking.create",
+    "originator": "taas-api",
+    "timestamp": "2020-11-05T19:00:25.038Z",
+    "mime-type": "application/json",
+    "payload": {
+        "projectId": 21,
+        "userId": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "jobId": "ffbc24f7-301e-48d3-bf01-c056916056a2",
+        "startDate": "2020-09-27",
+        "endDate": "2020-09-27",
+        "memberRate": 13.23,
+        "customerRate": 13,
+        "rateType": "hourly",
+        "id": "60d97713-8621-476e-b006-7cb9589c7777",
+        "createdAt": "2020-11-05T19:00:23.036Z",
+        "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "status": "placed",
+        "billingAccountId": 80000071
+    }
+}

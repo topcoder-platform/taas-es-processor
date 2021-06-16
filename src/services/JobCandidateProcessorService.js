@@ -25,7 +25,8 @@ async function updateCandidateStatus ({ type, payload, previousData }) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `jobCandidate is already in status: ${payload.status}` })
     return
   }
-  if (!['rejected', 'shortlist'].includes(payload.status)) {
+  // if (!['rejected', 'shortlist',].includes(payload.status)) {
+  if (!['client rejected - screening', 'client rejected - interview', 'interview', 'selected'].includes(payload.status)) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `not interested status: ${payload.status}` })
     return
   }
@@ -85,24 +86,30 @@ async function processCreate (message, transactionId) {
 }
 
 processCreate.schema = {
-  message: Joi.object().keys({
-    topic: Joi.string().required(),
-    originator: Joi.string().required(),
-    timestamp: Joi.date().required(),
-    'mime-type': Joi.string().required(),
-    payload: Joi.object().keys({
-      id: Joi.string().uuid().required(),
-      jobId: Joi.string().uuid().required(),
-      userId: Joi.string().uuid().required(),
-      createdAt: Joi.date().required(),
-      createdBy: Joi.string().uuid().required(),
-      updatedAt: Joi.date().allow(null),
-      updatedBy: Joi.string().uuid().allow(null),
-      status: Joi.jobCandidateStatus().required(),
-      externalId: Joi.string().allow(null),
-      resume: Joi.string().uri().allow(null)
-    }).required()
-  }).required(),
+  message: Joi.object()
+    .keys({
+      topic: Joi.string().required(),
+      originator: Joi.string().required(),
+      timestamp: Joi.date().required(),
+      'mime-type': Joi.string().required(),
+      key: Joi.string().allow(null),
+      payload: Joi.object()
+        .keys({
+          id: Joi.string().uuid().required(),
+          jobId: Joi.string().uuid().required(),
+          userId: Joi.string().uuid().required(),
+          createdAt: Joi.date().required(),
+          createdBy: Joi.string().uuid().required(),
+          updatedAt: Joi.date().allow(null),
+          updatedBy: Joi.string().uuid().allow(null),
+          status: Joi.jobCandidateStatus().required(),
+          externalId: Joi.string().allow(null),
+          resume: Joi.string().uri().allow(null).allow(''),
+          remark: Joi.string().allow(null).allow('')
+        })
+        .required()
+    })
+    .required(),
   transactionId: Joi.string().required()
 }
 
@@ -158,6 +165,7 @@ processDelete.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required()
     }).required()

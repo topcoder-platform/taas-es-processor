@@ -16,5 +16,19 @@ module.exports = {
       JobCandidateCreate: 'jobcandidate:create',
       JobCandidateUpdate: 'jobcandidate:update'
     }
+  },
+  Interview: {
+    Status: {
+      Scheduling: 'Scheduling',
+      Scheduled: 'Scheduled',
+      RequestedForReschedule: 'Requested for reschedule',
+      Rescheduled: 'Rescheduled',
+      Completed: 'Completed',
+      Cancelled: 'Cancelled'
+    },
+    XaiTemplate: {
+      '30MinInterview': 'interview-30',
+      '60MinInterview': 'interview-60'
+    }
   }
 }

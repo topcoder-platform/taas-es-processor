@@ -17,6 +17,20 @@ const messages = {
     update: { topic: 'taas.resourcebooking.update', message: require('../messages/taas.resourcebooking.update.event.json') },
     delete: { topic: 'taas.resourcebooking.delete', message: require('../messages/taas.resourcebooking.delete.event.json') }
   },
+  WorkPeriod: {
+    create: { topic: 'taas.workperiod.create', message: require('../messages/taas.workperiod.create.event.json') },
+    update: { topic: 'taas.workperiod.update', message: require('../messages/taas.workperiod.update.event.json') },
+    delete: { topic: 'taas.workperiod.delete', message: require('../messages/taas.workperiod.delete.event.json') }
+  },
+  WorkPeriodPayment: {
+    create: { topic: 'taas.workperiodpayment.create', message: require('../messages/taas.workperiodpayment.create.event.json') },
+    update: { topic: 'taas.workperiodpayment.update', message: require('../messages/taas.workperiodpayment.update.event.json') }
+  },
+  Role: {
+    create: { topic: 'taas.role.requested', message: require('../messages/taas.role.create.event.json') },
+    update: { topic: 'taas.role.update', message: require('../messages/taas.role.update.event.json') },
+    delete: { topic: 'taas.role.delete', message: require('../messages/taas.role.delete.event .json') }
+  },
   messageInvalid: '{ "topic": "taas.job.create", }'
 }
 

@@ -40,7 +40,8 @@ async function clearES () {
         query: {
           match_all: {}
         }
-      }
+      },
+      refresh: true
     })
   }
 }

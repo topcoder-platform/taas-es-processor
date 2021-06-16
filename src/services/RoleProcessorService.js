@@ -1,5 +1,5 @@
 /**
- * ResourceBooking Processor Service
+ * Role Processor Service
  */
 
 const Joi = require('@hapi/joi')
@@ -16,12 +16,12 @@ const esClient = helper.getESClient()
  * @param {String} transactionId
  */
 async function processCreate (message, transactionId) {
-  const resourcebooking = message.payload
+  const role = message.payload
   await esClient.createExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    id: resourcebooking.id,
+    index: config.get('esConfig.ES_INDEX_ROLE'),
+    id: role.id,
     transactionId,
-    body: resourcebooking,
+    body: role,
     refresh: constants.esRefreshOption
   })
 }
@@ -35,20 +35,29 @@ processCreate.schema = {
     key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
-      projectId: Joi.number().integer().required(),
-      userId: Joi.string().uuid().required(),
-      jobId: Joi.string().uuid().allow(null),
-      startDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
-      endDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
-      memberRate: Joi.number().allow(null),
-      customerRate: Joi.number().allow(null),
-      rateType: Joi.rateType().required(),
+      name: Joi.string().max(50).required(),
+      description: Joi.string().max(1000).allow(null),
+      listOfSkills: Joi.array().items(Joi.string().max(50).required()).allow(null),
+      rates: Joi.array().items(Joi.object().keys({
+        global: Joi.smallint().required(),
+        inCountry: Joi.smallint().required(),
+        offShore: Joi.smallint().required(),
+        rate30Global: Joi.smallint().allow(null),
+        rate30InCountry: Joi.smallint().allow(null),
+        rate30OffShore: Joi.smallint().allow(null),
+        rate20Global: Joi.smallint().allow(null),
+        rate20InCountry: Joi.smallint().allow(null),
+        rate20OffShore: Joi.smallint().allow(null)
+      }).required()).required(),
+      numberOfMembers: Joi.number().allow(null),
+      numberOfMembersAvailable: Joi.smallint().allow(null),
+      imageUrl: Joi.string().uri().max(255).allow(null),
+      timeToCandidate: Joi.smallint().allow(null),
+      timeToInterview: Joi.smallint().allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
-      updatedBy: Joi.string().uuid().allow(null),
-      status: Joi.resourceBookingStatus().required(),
-      billingAccountId: Joi.number().allow(null)
+      updatedBy: Joi.string().uuid().allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
@@ -62,7 +71,7 @@ processCreate.schema = {
 async function processUpdate (message, transactionId) {
   const data = message.payload
   await esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    index: config.get('esConfig.ES_INDEX_ROLE'),
     id: data.id,
     transactionId,
     body: {
@@ -82,7 +91,7 @@ processUpdate.schema = processCreate.schema
 async function processDelete (message, transactionId) {
   const id = message.payload.id
   await esClient.deleteExtra({
-    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    index: config.get('esConfig.ES_INDEX_ROLE'),
     id,
     transactionId,
     refresh: constants.esRefreshOption
@@ -109,4 +118,4 @@ module.exports = {
   processDelete
 }
 
-logger.buildService(module.exports, 'ResourceBookingProcessorService')
+logger.buildService(module.exports, 'RoleProcessorService')
