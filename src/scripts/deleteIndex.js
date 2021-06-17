@@ -12,7 +12,7 @@ async function deleteIndex () {
   const indices = [config.get('esConfig.ES_INDEX_JOB'),
     config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
     config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    config.get('esConfig.ES_INDEX_WORK_PERIOD')]
+    config.get('esConfig.ES_INDEX_ROLE')]
   for (const index of indices) {
     await esClient.indices.delete({
       index

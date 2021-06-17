@@ -15,6 +15,8 @@ const ResourceBookingProcessorService = require('./services/ResourceBookingProce
 const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorService')
 const InterviewProcessorService = require('./services/InterviewProcessorService')
 const WorkPeriodPaymentProcessorService = require('./services/WorkPeriodPaymentProcessorService')
+const RoleProcessorService = require('./services/RoleProcessorService')
+const ActionProcessorService = require('./services/ActionProcessorService')
 const Mutex = require('async-mutex').Mutex
 const events = require('events')
 
@@ -22,7 +24,6 @@ const eventEmitter = new events.EventEmitter()
 
 // healthcheck listening port
 process.env.PORT = config.PORT
-
 const localLogger = {
   info: (message) => logger.info({ component: 'app', message }),
   debug: (message) => logger.debug({ component: 'app', message }),
@@ -52,7 +53,13 @@ const topicServiceMapping = {
   // interview
   [config.topics.TAAS_INTERVIEW_REQUEST_TOPIC]: InterviewProcessorService.processRequestInterview,
   [config.topics.TAAS_INTERVIEW_UPDATE_TOPIC]: InterviewProcessorService.processUpdateInterview,
-  [config.topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC]: InterviewProcessorService.processBulkUpdateInterviews
+  [config.topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC]: InterviewProcessorService.processBulkUpdateInterviews,
+  // role
+  [config.topics.TAAS_ROLE_CREATE_TOPIC]: RoleProcessorService.processCreate,
+  [config.topics.TAAS_ROLE_UPDATE_TOPIC]: RoleProcessorService.processUpdate,
+  [config.topics.TAAS_ROLE_DELETE_TOPIC]: RoleProcessorService.processDelete,
+  // action
+  [config.topics.TAAS_ACTION_RETRY_TOPIC]: ActionProcessorService.processRetry
 }
 
 // Start kafka consumer
@@ -153,6 +160,7 @@ async function initConsumer () {
       subscriptions: topics,
       handler: async (messageSet, topic, partition) => {
         eventEmitter.emit('start_handling_message')
+        localLogger.debug(`Consumer handler. Topic: ${topic}, partition: ${partition}, message set length: ${messageSet.length}`)
         await dataHandler(messageSet, topic, partition)
         eventEmitter.emit('end_handling_message')
       }
@@ -173,5 +181,6 @@ if (!module.parent) {
 
 module.exports = {
   initConsumer,
-  eventEmitter
+  eventEmitter,
+  topicServiceMapping
 }

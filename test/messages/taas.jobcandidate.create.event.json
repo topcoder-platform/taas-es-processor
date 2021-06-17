@@ -1,1 +1,15 @@
-{"topic":"taas.jobcandidate.create","originator":"taas-api","timestamp":"2020-11-05T19:00:21.597Z","mime-type":"application/json","payload":{"jobId":"ffbc24f7-301e-48d3-bf01-c056916056a2","userId":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","id":"0cb99adb-8bcd-4952-9203-9867dd45ef6f","createdAt":"2020-11-05T19:00:19.052Z","createdBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","status":"open"}}
+{
+    "topic": "taas.jobcandidate.create",
+    "originator": "taas-api",
+    "timestamp": "2020-11-05T19:00:21.597Z",
+    "mime-type": "application/json",
+    "payload": {
+        "jobId": "ffbc24f7-301e-48d3-bf01-c056916056a2",
+        "userId": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "id": "0cb99adb-8bcd-4952-9203-9867dd45ef6f",
+        "createdAt": "2020-11-05T19:00:19.052Z",
+        "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "status": "open",
+        "remark": "excellent"
+    }
+}

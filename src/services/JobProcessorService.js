@@ -65,6 +65,7 @@ processCreate.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       projectId: Joi.number().integer().required(),
@@ -78,12 +79,20 @@ processCreate.schema = {
       rateType: Joi.rateType().allow(null),
       workload: Joi.workload().allow(null),
       skills: Joi.array().items(Joi.string().uuid()).required(),
+      roles: Joi.array().items(Joi.string().uuid()).allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
       updatedBy: Joi.string().uuid().allow(null),
       status: Joi.jobStatus().required(),
-      isApplicationPageActive: Joi.boolean().required()
+      isApplicationPageActive: Joi.boolean().required(),
+      minSalary: Joi.number().integer().allow(null),
+      maxSalary: Joi.number().integer().allow(null),
+      hoursPerWeek: Joi.number().integer().allow(null),
+      jobLocation: Joi.string().allow(null).allow(''),
+      jobTimezone: Joi.string().allow(null).allow(''),
+      currency: Joi.string().allow(null).allow(''),
+      roleIds: Joi.array().items(Joi.string().uuid().required()).allow(null)
     }).required()
   }).required(),
   transactionId: Joi.string().required()
@@ -134,6 +143,7 @@ processDelete.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required()
     }).required()

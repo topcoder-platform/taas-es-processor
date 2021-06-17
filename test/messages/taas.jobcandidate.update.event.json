@@ -1,1 +1,17 @@
-{"topic":"taas.jobcandidate.update","originator":"taas-api","timestamp":"2020-11-05T19:00:23.003Z","mime-type":"application/json","payload":{"id":"0cb99adb-8bcd-4952-9203-9867dd45ef6f","jobId":"ffbc24f7-301e-48d3-bf01-c056916056a2","userId":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","status":"selected","updatedAt":"2020-11-05T19:00:21.625Z","updatedBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","createdAt":"2020-11-05T19:00:16.268Z","createdBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a"}}
+{
+    "topic": "taas.jobcandidate.update",
+    "originator": "taas-api",
+    "timestamp": "2020-11-05T19:00:23.003Z",
+    "mime-type": "application/json",
+    "payload": {
+        "id": "0cb99adb-8bcd-4952-9203-9867dd45ef6f",
+        "jobId": "ffbc24f7-301e-48d3-bf01-c056916056a2",
+        "userId": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "status": "selected",
+        "remark": "excellent",
+        "updatedAt": "2020-11-05T19:00:21.625Z",
+        "updatedBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "createdAt": "2020-11-05T19:00:16.268Z",
+        "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a"
+    }
+}

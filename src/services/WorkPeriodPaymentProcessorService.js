@@ -4,7 +4,6 @@
 
 const Joi = require('@hapi/joi')
 const config = require('config')
-const _ = require('lodash')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
@@ -12,25 +11,39 @@ const constants = require('../common/constants')
 const esClient = helper.getESClient()
 
 /**
- * Process create entity message
- * @param {Object} message the kafka message
- * @param {String} transactionId
- */
+  * Process create entity message
+  * @param {Object} message the kafka message
+  * @param {String} transactionId
+  */
 async function processCreate (message, transactionId) {
-  const data = message.payload
-  const workPeriod = await esClient.getExtra({
-    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-    id: data.workPeriodId
+  const workPeriodPayment = message.payload
+  // find related resourceBooking
+  const resourceBooking = await esClient.search({
+    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    body: {
+      query: {
+        nested: {
+          path: 'workPeriods',
+          query: {
+            match: { 'workPeriods.id': workPeriodPayment.workPeriodId }
+          }
+        }
+      }
+    }
   })
-  const payments = _.isArray(workPeriod.body.payments) ? workPeriod.body.payments : []
-  payments.push(data)
-
-  return esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-    id: data.workPeriodId,
+  if (!resourceBooking.body.hits.total.value) {
+    throw new Error(`id: ${workPeriodPayment.workPeriodId} "WorkPeriod" not found`)
+  }
+  await esClient.update({
+    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    id: resourceBooking.body.hits.hits[0]._id,
     transactionId,
     body: {
-      doc: _.assign(workPeriod.body, { payments })
+      script: {
+        lang: 'painless',
+        source: 'def wp = ctx._source.workPeriods.find(workPeriod -> workPeriod.id == params.workPeriodPayment.workPeriodId); if(!wp.containsKey("payments") || wp.payments == null){wp["payments"]=[]}wp.payments.add(params.workPeriodPayment)',
+        params: { workPeriodPayment }
+      }
     },
     refresh: constants.esRefreshOption
   })
@@ -42,13 +55,24 @@ processCreate.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       workPeriodId: Joi.string().uuid().required(),
-      challengeId: Joi.string().uuid().required(),
+      challengeId: Joi.string().uuid().allow(null),
+      memberRate: Joi.number().required(),
+      customerRate: Joi.number().allow(null),
+      days: Joi.number().integer().min(1).max(5).required(),
       amount: Joi.number().greater(0).allow(null),
       status: Joi.workPeriodPaymentStatus().required(),
       billingAccountId: Joi.number().allow(null),
+      statusDetails: Joi.object().keys({
+        errorMessage: Joi.string().required(),
+        errorCode: Joi.number().integer().allow(null),
+        retry: Joi.number().integer().allow(null),
+        step: Joi.string().allow(null),
+        challengeId: Joi.string().uuid().allow(null)
+      }).unknown(true).allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
@@ -59,70 +83,39 @@ processCreate.schema = {
 }
 
 /**
- * Process update entity message
- * @param {Object} message the kafka message
- * @param {String} transactionId
- */
+  * Process update entity message
+  * @param {Object} message the kafka message
+  * @param {String} transactionId
+  */
 async function processUpdate (message, transactionId) {
   const data = message.payload
-  let workPeriod = await esClient.search({
-    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
+  // find workPeriodPayment in it's parent ResourceBooking
+  const resourceBooking = await esClient.search({
+    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     body: {
       query: {
         nested: {
-          path: 'payments',
+          path: 'workPeriods.payments',
           query: {
-            match: { 'payments.id': data.id }
+            match: { 'workPeriods.payments.id': data.id }
           }
         }
       }
     }
   })
-  if (!workPeriod.body.hits.total.value) {
-    throw new Error(`id: ${data.id} "WorkPeriodPayments" not found`)
+  if (!resourceBooking.body.hits.total.value) {
+    throw new Error(`id: ${data.id} "WorkPeriodPayment" not found`)
   }
-  let payments
-  // if WorkPeriodPayment's workPeriodId changed then it must be deleted from the old WorkPeriod
-  // and added to the new WorkPeriod
-  if (workPeriod.body.hits.hits[0]._source.id !== data.workPeriodId) {
-    payments = _.filter(workPeriod.body.hits.hits[0]._source.payments, (payment) => payment.id !== data.id)
-    await esClient.updateExtra({
-      index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-      id: workPeriod.body.hits.hits[0]._source.id,
-      transactionId,
-      body: {
-        doc: _.assign(workPeriod.body.hits.hits[0]._source, { payments })
-      }
-    })
-    workPeriod = await esClient.getExtra({
-      index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-      id: data.workPeriodId
-    })
-    payments = _.isArray(workPeriod.body.payments) ? workPeriod.body.payments : []
-    payments.push(data)
-    return esClient.updateExtra({
-      index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-      id: data.workPeriodId,
-      transactionId,
-      body: {
-        doc: _.assign(workPeriod.body, { payments })
-      }
-    })
-  }
-
-  payments = _.map(workPeriod.body.hits.hits[0]._source.payments, (payment) => {
-    if (payment.id === data.id) {
-      return _.assign(payment, data)
-    }
-    return payment
-  })
-
-  return esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_WORK_PERIOD'),
-    id: data.workPeriodId,
+  await esClient.update({
+    index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
+    id: resourceBooking.body.hits.hits[0]._id,
     transactionId,
     body: {
-      doc: _.assign(workPeriod.body.hits.hits[0]._source, { payments })
+      script: {
+        lang: 'painless',
+        source: 'def wp = ctx._source.workPeriods.find(workPeriod -> workPeriod.id == params.data.workPeriodId); wp.payments.removeIf(payment -> payment.id == params.data.id); wp.payments.add(params.data)',
+        params: { data }
+      }
     },
     refresh: constants.esRefreshOption
   })

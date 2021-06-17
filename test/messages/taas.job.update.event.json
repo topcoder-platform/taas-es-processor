@@ -1,1 +1,37 @@
-{"topic":"taas.job.update","originator":"taas-api","timestamp":"2020-11-05T19:00:19.015Z","mime-type":"application/json","payload":{"id":"ffbc24f7-301e-48d3-bf01-c056916056a2","title":"Job Title Updated","projectId":21,"externalId":"1212","description":"Dummy Description","startDate":"2020-09-27T04:17:23.131Z","duration":19,"numPositions":13,"resourceType":"Dummy Resource Type","rateType":"hourly","skills":["3fa85f64-5717-4562-b3fc-2c963f66afa6","cc41ddc4-cacc-4570-9bdb-1229c12b9784"],"status":"sourcing","updatedAt":"2020-11-05T19:00:17.612Z","updatedBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","createdAt":"2020-11-05T19:00:16.268Z","createdBy":"a55fe1bc-1754-45fa-9adc-cf3d6d7c377a","isApplicationPageActive":false}}
+{
+    "topic": "taas.job.update",
+    "originator": "taas-api",
+    "timestamp": "2020-11-05T19:00:19.015Z",
+    "mime-type": "application/json",
+    "payload": {
+        "id": "ffbc24f7-301e-48d3-bf01-c056916056a2",
+        "title": "Job Title Updated",
+        "projectId": 21,
+        "externalId": "1212",
+        "description": "Dummy Description",
+        "startDate": "2020-09-27T04:17:23.131Z",
+        "duration": 19,
+        "numPositions": 13,
+        "resourceType": "Dummy Resource Type",
+        "rateType": "hourly",
+        "skills": [
+            "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "cc41ddc4-cacc-4570-9bdb-1229c12b9784"
+        ],
+        "status": "sourcing",
+        "updatedAt": "2020-11-05T19:00:17.612Z",
+        "updatedBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "createdAt": "2020-11-05T19:00:16.268Z",
+        "createdBy": "a55fe1bc-1754-45fa-9adc-cf3d6d7c377a",
+        "isApplicationPageActive": false,
+        "minSalary": 100,
+        "maxSalary": 200,
+        "hoursPerWeek": 20,
+        "jobLocation": "Any location",
+        "jobTimezone": "GMT",
+        "currency": "USD",
+        "roleIds": [
+            "e7b7e818-40d4-4102-b486-09bdd21400b8"
+        ]
+    }
+}

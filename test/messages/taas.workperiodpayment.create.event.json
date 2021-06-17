@@ -1,1 +1,18 @@
-{"topic":"taas.workperiodpayment.create","originator":"taas-api","timestamp":"2021-04-09T20:10:33.770Z","mime-type":"application/json","payload":{"challengeId":"00000000-0000-0000-0000-000000000000","workPeriodId":"140b7407-540d-40c3-ad23-905d932aa9c8","amount":600,"status":"completed","id":"09c80ee6-21be-45a4-9c3c-7ec4c75ece79","createdBy":"57646ff9-1cd3-4d3c-88ba-eb09a395366c","updatedAt":"2021-04-09T20:10:33.755Z","createdAt":"2021-04-09T20:10:33.755Z","updatedBy":null}}
+{
+    "topic": "taas.workperiodpayment.create",
+    "originator": "taas-api",
+    "timestamp": "2021-04-09T20:10:33.770Z",
+    "mime-type": "application/json",
+    "payload": {
+        "challengeId": "00000000-0000-0000-0000-000000000000",
+        "workPeriodId": "926040c4-1709-4de2-b2b6-52adf6e5e72d",
+        "amount": 600,
+        "status": "completed",
+        "id": "09c80ee6-21be-45a4-9c3c-7ec4c75ece79",
+        "billingAccountId": 80000071,
+        "createdBy": "57646ff9-1cd3-4d3c-88ba-eb09a395366c",
+        "updatedAt": "2021-04-09T20:10:33.755Z",
+        "createdAt": "2021-04-09T20:10:33.755Z",
+        "updatedBy": null
+    }
+}

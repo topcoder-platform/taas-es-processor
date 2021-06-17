@@ -1,7 +1,7 @@
 /**
  * The default configuration file.
  */
-
+require('dotenv').config()
 module.exports = {
   PORT: process.env.PORT || 3001,
   LOG_LEVEL: process.env.LOG_LEVEL || 'debug',
@@ -14,8 +14,12 @@ module.exports = {
 
   // Kafka group id
   KAFKA_GROUP_ID: process.env.KAFKA_GROUP_ID || 'taas-es-processor',
+  // The originator value for the kafka messages
+  KAFKA_MESSAGE_ORIGINATOR: process.env.KAFKA_MESSAGE_ORIGINATOR || 'taas-es-processor',
 
   topics: {
+    // The error topic at which bus api will publish any errors
+    KAFKA_ERROR_TOPIC: process.env.KAFKA_ERROR_TOPIC || 'common.error.reporting',
     // topics for job service
     TAAS_JOB_CREATE_TOPIC: process.env.TAAS_JOB_CREATE_TOPIC || 'taas.job.create',
     TAAS_JOB_UPDATE_TOPIC: process.env.TAAS_JOB_UPDATE_TOPIC || 'taas.job.update',
@@ -38,8 +42,21 @@ module.exports = {
     // topics for interview service
     TAAS_INTERVIEW_REQUEST_TOPIC: process.env.TAAS_INTERVIEW_REQUEST_TOPIC || 'taas.interview.requested',
     TAAS_INTERVIEW_UPDATE_TOPIC: process.env.TAAS_INTERVIEW_UPDATE_TOPIC || 'taas.interview.update',
-    TAAS_INTERVIEW_BULK_UPDATE_TOPIC: process.env.TAAS_INTERVIEW_BULK_UPDATE_TOPIC || 'taas.interview.bulkUpdate'
+    TAAS_INTERVIEW_BULK_UPDATE_TOPIC: process.env.TAAS_INTERVIEW_BULK_UPDATE_TOPIC || 'taas.interview.bulkUpdate',
+    // topics for role service
+    TAAS_ROLE_CREATE_TOPIC: process.env.TAAS_ROLE_CREATE_TOPIC || 'taas.role.requested',
+    TAAS_ROLE_UPDATE_TOPIC: process.env.TAAS_ROLE_UPDATE_TOPIC || 'taas.role.update',
+    TAAS_ROLE_DELETE_TOPIC: process.env.TAAS_ROLE_DELETE_TOPIC || 'taas.role.delete',
+    // special kafka topics
+    TAAS_ACTION_RETRY_TOPIC: process.env.TAAS_ACTION_RETRY_TOPIC || 'taas.action.retry'
+
   },
+  // maximum allowed retry count for failed operations for sending `action.retry` message
+  MAX_RETRY: process.env.MAX_RETRY || 3,
+  // base amount of retry delay for failed operations
+  BASE_RETRY_DELAY: process.env.BASE_RETRY_DELAY || 500,
+  // Topcoder Bus API URL
+  BUSAPI_URL: process.env.BUSAPI_URL || 'https://api.topcoder-dev.com/v5',
 
   esConfig: {
     HOST: process.env.ES_HOST || 'http://localhost:9200',
@@ -55,7 +72,7 @@ module.exports = {
     ES_INDEX_JOB: process.env.ES_INDEX_JOB || 'job',
     ES_INDEX_JOB_CANDIDATE: process.env.ES_INDEX_JOB_CANDIDATE || 'job_candidate',
     ES_INDEX_RESOURCE_BOOKING: process.env.ES_INDEX_RESOURCE_BOOKING || 'resource_booking',
-    ES_INDEX_WORK_PERIOD: process.env.ES_INDEX_WORK_PERIOD || 'work_period'
+    ES_INDEX_ROLE: process.env.ES_INDEX_ROLE || 'role'
   },
 
   auth0: {
@@ -63,7 +80,8 @@ module.exports = {
     AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
     AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
     AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
-    AUTH0_PROXY_SERVER_URL: process.env.AUTH0_PROXY_SERVER_URL
+    AUTH0_PROXY_SERVER_URL: process.env.AUTH0_PROXY_SERVER_URL,
+    TOKEN_CACHE_TIME: process.env.TOKEN_CACHE_TIME
   },
 
   zapier: {
