@@ -104,8 +104,8 @@ processCreate.schema = {
           updatedBy: Joi.string().uuid().allow(null),
           status: Joi.jobCandidateStatus().required(),
           externalId: Joi.string().allow(null),
-          resume: Joi.string().uri().allow(null).allow(''),
-          remark: Joi.string().allow(null).allow('')
+          resume: Joi.string().uri().allow(null).allow(""),
+          remark: Joi.stringAllowEmpty().allow(null),
         })
         .required()
     })
