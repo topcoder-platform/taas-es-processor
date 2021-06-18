@@ -4,7 +4,6 @@
 
 const Joi = require('@hapi/joi')
 const config = require('config')
-const _ = require('lodash')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
@@ -12,45 +11,39 @@ const constants = require('../common/constants')
 const esClient = helper.getESClient()
 
 /**
- * Process create entity message
- * @param {Object} message the kafka message
- * @param {String} transactionId
- */
+  * Process create entity message
+  * @param {Object} message the kafka message
+  * @param {String} transactionId
+  */
 async function processCreate (message, transactionId) {
-  const data = message.payload
+  const workPeriodPayment = message.payload
   // find related resourceBooking
-  const result = await esClient.search({
+  const resourceBooking = await esClient.search({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     body: {
       query: {
         nested: {
           path: 'workPeriods',
           query: {
-            match: { 'workPeriods.id': data.workPeriodId }
+            match: { 'workPeriods.id': workPeriodPayment.workPeriodId }
           }
         }
       }
     }
   })
-  if (!result.body.hits.total.value) {
-    throw new Error(`id: ${data.workPeriodId} "WorkPeriod" not found`)
+  if (!resourceBooking.body.hits.total.value) {
+    throw new Error(`id: ${workPeriodPayment.workPeriodId} "WorkPeriod" not found`)
   }
-  const resourceBooking = result.body.hits.hits[0]._source
-  // find related workPeriod record
-  const workPeriod = _.find(resourceBooking.workPeriods, ['id', data.workPeriodId])
-  // Get workPeriod's existing payments
-  const payments = _.isArray(workPeriod.payments) ? workPeriod.payments : []
-  // Append new payment
-  payments.push(data)
-  // Assign new payments array to workPeriod
-  workPeriod.payments = payments
-  // Update ResourceBooking's workPeriods property
-  await esClient.updateExtra({
+  await esClient.update({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    id: resourceBooking.id,
+    id: resourceBooking.body.hits.hits[0]._id,
     transactionId,
     body: {
-      doc: { workPeriods: resourceBooking.workPeriods }
+      script: {
+        lang: 'painless',
+        source: 'def wp = ctx._source.workPeriods.find(workPeriod -> workPeriod.id == params.workPeriodPayment.workPeriodId); if(!wp.containsKey("payments") || wp.payments == null){wp["payments"]=[]}wp.payments.add(params.workPeriodPayment)',
+        params: { workPeriodPayment }
+      }
     },
     refresh: constants.esRefreshOption
   })
@@ -62,13 +55,24 @@ processCreate.schema = {
     originator: Joi.string().required(),
     timestamp: Joi.date().required(),
     'mime-type': Joi.string().required(),
+    key: Joi.string().allow(null),
     payload: Joi.object().keys({
       id: Joi.string().uuid().required(),
       workPeriodId: Joi.string().uuid().required(),
       challengeId: Joi.string().uuid().allow(null),
+      memberRate: Joi.number().required(),
+      customerRate: Joi.number().allow(null),
+      days: Joi.number().integer().min(1).max(5).required(),
       amount: Joi.number().greater(0).allow(null),
       status: Joi.workPeriodPaymentStatus().required(),
       billingAccountId: Joi.number().allow(null),
+      statusDetails: Joi.object().keys({
+        errorMessage: Joi.string().required(),
+        errorCode: Joi.number().integer().allow(null),
+        retry: Joi.number().integer().allow(null),
+        step: Joi.string().allow(null),
+        challengeId: Joi.string().uuid().allow(null)
+      }).unknown(true).allow(null),
       createdAt: Joi.date().required(),
       createdBy: Joi.string().uuid().required(),
       updatedAt: Joi.date().allow(null),
@@ -79,14 +83,14 @@ processCreate.schema = {
 }
 
 /**
- * Process update entity message
- * @param {Object} message the kafka message
- * @param {String} transactionId
- */
+  * Process update entity message
+  * @param {Object} message the kafka message
+  * @param {String} transactionId
+  */
 async function processUpdate (message, transactionId) {
   const data = message.payload
   // find workPeriodPayment in it's parent ResourceBooking
-  let result = await esClient.search({
+  const resourceBooking = await esClient.search({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
     body: {
       query: {
@@ -99,89 +103,19 @@ async function processUpdate (message, transactionId) {
       }
     }
   })
-  if (!result.body.hits.total.value) {
+  if (!resourceBooking.body.hits.total.value) {
     throw new Error(`id: ${data.id} "WorkPeriodPayment" not found`)
   }
-  const resourceBooking = _.cloneDeep(result.body.hits.hits[0]._source)
-  let workPeriod = null
-  let payment = null
-  let paymentIndex = null
-  // find workPeriod and workPeriodPayment records
-  _.forEach(resourceBooking.workPeriods, wp => {
-    _.forEach(wp.payments, (p, pi) => {
-      if (p.id === data.id) {
-        payment = p
-        paymentIndex = pi
-        return false
-      }
-    })
-    if (payment) {
-      workPeriod = wp
-      return false
-    }
-  })
-  let payments
-  // if WorkPeriodPayment's workPeriodId changed then it must be deleted from the old WorkPeriod
-  // and added to the new WorkPeriod
-  if (payment.workPeriodId !== data.workPeriodId) {
-    // remove payment from payments
-    payments = _.filter(workPeriod.payments, p => p.id !== data.id)
-    // assign payments to workPeriod record
-    workPeriod.payments = payments
-    // Update old ResourceBooking's workPeriods property
-    await esClient.updateExtra({
-      index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-      id: resourceBooking.id,
-      transactionId,
-      body: {
-        doc: { workPeriods: resourceBooking.workPeriods }
-      },
-      refresh: constants.esRefreshOption
-    })
-    // find workPeriodPayment's new parent WorkPeriod
-    result = await esClient.search({
-      index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-      body: {
-        query: {
-          nested: {
-            path: 'workPeriods',
-            query: {
-              match: { 'workPeriods.id': data.workPeriodId }
-            }
-          }
-        }
-      }
-    })
-    const newResourceBooking = result.body.hits.hits[0]._source
-    // find WorkPeriod record in ResourceBooking
-    const newWorkPeriod = _.find(newResourceBooking.workPeriods, ['id', data.workPeriodId])
-    // Get WorkPeriod's existing payments
-    const newPayments = _.isArray(newWorkPeriod.payments) ? newWorkPeriod.payments : []
-    // Append new payment
-    newPayments.push(data)
-    // Assign new payments array to workPeriod
-    newWorkPeriod.payments = newPayments
-    // Update new ResourceBooking's workPeriods property
-    await esClient.updateExtra({
-      index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-      id: newResourceBooking.id,
-      transactionId,
-      body: {
-        doc: { workPeriods: newResourceBooking.workPeriods }
-      },
-      refresh: constants.esRefreshOption
-    })
-    return
-  }
-  // update payment record
-  workPeriod.payments[paymentIndex] = data
-  // Update ResourceBooking's workPeriods property
-  await esClient.updateExtra({
+  await esClient.update({
     index: config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    id: resourceBooking.id,
+    id: resourceBooking.body.hits.hits[0]._id,
     transactionId,
     body: {
-      doc: { workPeriods: resourceBooking.workPeriods }
+      script: {
+        lang: 'painless',
+        source: 'def wp = ctx._source.workPeriods.find(workPeriod -> workPeriod.id == params.data.workPeriodId); wp.payments.removeIf(payment -> payment.id == params.data.id); wp.payments.add(params.data)',
+        params: { data }
+      }
     },
     refresh: constants.esRefreshOption
   })

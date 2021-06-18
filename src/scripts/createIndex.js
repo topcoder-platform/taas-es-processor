@@ -119,8 +119,8 @@ async function createIndex () {
                 startDate: { type: 'date', format: 'yyyy-MM-dd' },
                 endDate: { type: 'date', format: 'yyyy-MM-dd' },
                 daysWorked: { type: 'integer' },
-                memberRate: { type: 'float' },
-                customerRate: { type: 'float' },
+                daysPaid: { type: 'integer' },
+                paymentTotal: { type: 'float' },
                 paymentStatus: { type: 'keyword' },
                 payments: {
                   type: 'nested',
@@ -128,8 +128,21 @@ async function createIndex () {
                     id: { type: 'keyword' },
                     workPeriodId: { type: 'keyword' },
                     challengeId: { type: 'keyword' },
+                    memberRate: { type: 'float' },
+                    customerRate: { type: 'float' },
+                    days: { type: 'integer' },
                     amount: { type: 'float' },
                     status: { type: 'keyword' },
+                    statusDetails: {
+                      type: 'nested',
+                      properties: {
+                        errorMessage: { type: 'text' },
+                        errorCode: { type: 'integer' },
+                        retry: { type: 'integer' },
+                        step: { type: 'keyword' },
+                        challengeId: { type: 'keyword' }
+                      }
+                    },
                     billingAccountId: { type: 'integer' },
                     createdAt: { type: 'date' },
                     createdBy: { type: 'keyword' },

@@ -90,7 +90,13 @@ The following parameters can be set in config files or in env variables:
 
 ## Local deployment
 
-1. Make sure that Kafka and Elasticsearch is running as per instructions above.
+0. Make sure that Kafka and Elasticsearch is running as per instructions above.
+
+1. Make sure to use Node v12+ by command `node -v`. We recommend using [NVM](https://github.com/nvm-sh/nvm) to quickly switch to the right version:
+
+   ```bash
+   nvm use
+   ```
 
 2. From the project root directory, run the following command to install the dependencies
 
