@@ -42,10 +42,13 @@ processCreate.schema = {
         global: Joi.smallint().required(),
         inCountry: Joi.smallint().required(),
         offShore: Joi.smallint().required(),
+        niche: Joi.smallint().allow(null),
         rate30Global: Joi.smallint().allow(null),
+        rate30Niche: Joi.smallint().allow(null),
         rate30InCountry: Joi.smallint().allow(null),
         rate30OffShore: Joi.smallint().allow(null),
         rate20Global: Joi.smallint().allow(null),
+        rate20Niche: Joi.smallint().allow(null),
         rate20InCountry: Joi.smallint().allow(null),
         rate20OffShore: Joi.smallint().allow(null)
       }).required()).required(),
