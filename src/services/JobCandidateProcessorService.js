@@ -26,7 +26,7 @@ async function updateCandidateStatus ({ type, payload, previousData }) {
     return
   }
   // if (!['rejected', 'shortlist',].includes(payload.status)) {
-  if (!['client rejected - screening', 'client rejected - interview', 'interview', 'selected'].includes(payload.status)) {
+  if (!['client rejected - screening', 'client rejected - interview', 'interview', 'selected', 'withdrawn', 'withdrawn-prescreen'].includes(payload.status)) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `not interested status: ${payload.status}` })
     return
   }
@@ -104,8 +104,8 @@ processCreate.schema = {
           updatedBy: Joi.string().uuid().allow(null),
           status: Joi.jobCandidateStatus().required(),
           externalId: Joi.string().allow(null),
-          resume: Joi.string().uri().allow(null).allow(""),
-          remark: Joi.stringAllowEmpty().allow(null),
+          resume: Joi.string().uri().allow(null).allow(''),
+          remark: Joi.stringAllowEmpty().allow(null)
         })
         .required()
     })
