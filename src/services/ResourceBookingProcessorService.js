@@ -37,6 +37,7 @@ processCreate.schema = {
       id: Joi.string().uuid().required(),
       projectId: Joi.number().integer().required(),
       userId: Joi.string().uuid().required(),
+      sendWeeklySurvey: Joi.boolean().required(),
       jobId: Joi.string().uuid().allow(null),
       startDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),
       endDate: Joi.string().regex(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/).allow(null),

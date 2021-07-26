@@ -65,7 +65,7 @@ processCreate.schema = {
       topic: Joi.string().required(),
       originator: Joi.string().required(),
       timestamp: Joi.date().required(),
-      "mime-type": Joi.string().required(),
+      'mime-type': Joi.string().required(),
       payload: Joi.object()
         .keys({
           id: Joi.string().uuid().required(),
@@ -95,13 +95,13 @@ processCreate.schema = {
           currency: Joi.stringAllowEmpty().allow(null),
           roleIds: Joi.array()
             .items(Joi.string().uuid().required())
-            .allow(null),
+            .allow(null)
         })
-        .required(),
+        .required()
     })
     .required(),
-  transactionId: Joi.string().required(),
-};
+  transactionId: Joi.string().required()
+}
 
 /**
  * Process update entity message
