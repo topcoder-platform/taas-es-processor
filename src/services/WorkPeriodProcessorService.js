@@ -72,7 +72,7 @@ processCreate.schema = {
       projectId: Joi.number().integer().required(),
       startDate: Joi.string().required(),
       endDate: Joi.string().required(),
-      daysWorked: Joi.number().integer().min(0).max(5).required(),
+      daysWorked: Joi.number().integer().min(0).max(10).required(),
       daysPaid: Joi.number().integer().min(0).max(5).required(),
       paymentTotal: Joi.number().min(0).required(),
       paymentStatus: Joi.paymentStatus().required(),
