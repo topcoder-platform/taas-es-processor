@@ -107,7 +107,7 @@ async function createIndex () {
             memberRate: { type: 'float' },
             customerRate: { type: 'float' },
             rateType: { type: 'keyword' },
-            billingAccountId: { type: 'integer' },
+            billingAccountId: { type: 'integer', null_value: 0 },
             workPeriods: {
               type: 'nested',
               properties: {

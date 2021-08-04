@@ -77,8 +77,8 @@ processCreate.schema = {
         errorCode: Joi.number().integer().min(0),
         errorMessage: Joi.string()
       }).allow(null),
-      daysWorked: Joi.number().integer().min(0).max(5).required(),
-      daysPaid: Joi.number().integer().min(0).max(5).required(),
+      daysWorked: Joi.number().integer().min(0).max(10).required(),
+      daysPaid: Joi.number().integer().min(0).max(10).required(),
       paymentTotal: Joi.number().min(0).required(),
       paymentStatus: Joi.paymentStatus().required(),
       createdAt: Joi.date().required(),
