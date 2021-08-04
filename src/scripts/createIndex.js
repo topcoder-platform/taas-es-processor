@@ -103,6 +103,7 @@ async function createIndex () {
             status: { type: 'keyword' },
             startDate: { type: 'date', format: 'yyyy-MM-dd' },
             endDate: { type: 'date', format: 'yyyy-MM-dd' },
+            sendWeeklySurvey: { type: 'boolean' },
             memberRate: { type: 'float' },
             customerRate: { type: 'float' },
             rateType: { type: 'keyword' },
@@ -116,6 +117,14 @@ async function createIndex () {
                   normalizer: 'lowercaseNormalizer' },
                 projectId: { type: 'integer' },
                 userId: { type: 'keyword' },
+                sentSurvey: { type: 'boolean' },
+                sentSurveyError: {
+                  type: 'nested',
+                  properties: {
+                    errorCode: { type: 'integer' },
+                    errorMessage: { type: 'keyword' }
+                  }
+                },
                 startDate: { type: 'date', format: 'yyyy-MM-dd' },
                 endDate: { type: 'date', format: 'yyyy-MM-dd' },
                 daysWorked: { type: 'integer' },
