@@ -72,8 +72,13 @@ processCreate.schema = {
       projectId: Joi.number().integer().required(),
       startDate: Joi.string().required(),
       endDate: Joi.string().required(),
-      daysWorked: Joi.number().integer().min(0).max(5).required(),
-      daysPaid: Joi.number().integer().min(0).max(5).required(),
+      sentSurvey: Joi.boolean().required(),
+      sentSurveyError: Joi.object().keys({
+        errorCode: Joi.number().integer().min(0),
+        errorMessage: Joi.string()
+      }).allow(null),
+      daysWorked: Joi.number().integer().min(0).max(10).required(),
+      daysPaid: Joi.number().integer().min(0).max(10).required(),
       paymentTotal: Joi.number().min(0).required(),
       paymentStatus: Joi.paymentStatus().required(),
       createdAt: Joi.date().required(),
