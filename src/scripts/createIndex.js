@@ -52,6 +52,7 @@ async function createIndex () {
             jobId: { type: 'keyword' },
             userId: { type: 'keyword' },
             status: { type: 'keyword' },
+            viewedByCustomer: { type: 'boolean' },
             externalId: { type: 'keyword' },
             resume: { type: 'text' },
             remark: { type: 'keyword' },
