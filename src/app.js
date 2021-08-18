@@ -11,10 +11,10 @@ const logger = require('./common/logger')
 const helper = require('./common/helper')
 const JobProcessorService = require('./services/JobProcessorService')
 const JobCandidateProcessorService = require('./services/JobCandidateProcessorService')
-const ResourceBookingProcessorService = require('./services/ResourceBookingProcessorService')
-const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorService')
+// const ResourceBookingProcessorService = require('./services/ResourceBookingProcessorService')
+// const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorService')
 const InterviewProcessorService = require('./services/InterviewProcessorService')
-const WorkPeriodPaymentProcessorService = require('./services/WorkPeriodPaymentProcessorService')
+// const WorkPeriodPaymentProcessorService = require('./services/WorkPeriodPaymentProcessorService')
 const RoleProcessorService = require('./services/RoleProcessorService')
 const ActionProcessorService = require('./services/ActionProcessorService')
 const Mutex = require('async-mutex').Mutex
@@ -40,16 +40,16 @@ const topicServiceMapping = {
   [config.topics.TAAS_JOB_CANDIDATE_UPDATE_TOPIC]: JobCandidateProcessorService.processUpdate,
   [config.topics.TAAS_JOB_CANDIDATE_DELETE_TOPIC]: JobCandidateProcessorService.processDelete,
   // resource booking
-  [config.topics.TAAS_RESOURCE_BOOKING_CREATE_TOPIC]: ResourceBookingProcessorService.processCreate,
-  [config.topics.TAAS_RESOURCE_BOOKING_UPDATE_TOPIC]: ResourceBookingProcessorService.processUpdate,
-  [config.topics.TAAS_RESOURCE_BOOKING_DELETE_TOPIC]: ResourceBookingProcessorService.processDelete,
+  // [config.topics.TAAS_RESOURCE_BOOKING_CREATE_TOPIC]: ResourceBookingProcessorService.processCreate,
+  // [config.topics.TAAS_RESOURCE_BOOKING_UPDATE_TOPIC]: ResourceBookingProcessorService.processUpdate,
+  // [config.topics.TAAS_RESOURCE_BOOKING_DELETE_TOPIC]: ResourceBookingProcessorService.processDelete,
   // work period
-  [config.topics.TAAS_WORK_PERIOD_CREATE_TOPIC]: WorkPeriodProcessorService.processCreate,
-  [config.topics.TAAS_WORK_PERIOD_UPDATE_TOPIC]: WorkPeriodProcessorService.processUpdate,
-  [config.topics.TAAS_WORK_PERIOD_DELETE_TOPIC]: WorkPeriodProcessorService.processDelete,
+  // [config.topics.TAAS_WORK_PERIOD_CREATE_TOPIC]: WorkPeriodProcessorService.processCreate,
+  // [config.topics.TAAS_WORK_PERIOD_UPDATE_TOPIC]: WorkPeriodProcessorService.processUpdate,
+  // [config.topics.TAAS_WORK_PERIOD_DELETE_TOPIC]: WorkPeriodProcessorService.processDelete,
   // work period payment
-  [config.topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC]: WorkPeriodPaymentProcessorService.processCreate,
-  [config.topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC]: WorkPeriodPaymentProcessorService.processUpdate,
+  // [config.topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC]: WorkPeriodPaymentProcessorService.processCreate,
+  // [config.topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC]: WorkPeriodPaymentProcessorService.processUpdate,
   // interview
   [config.topics.TAAS_INTERVIEW_REQUEST_TOPIC]: InterviewProcessorService.processRequestInterview,
   [config.topics.TAAS_INTERVIEW_UPDATE_TOPIC]: InterviewProcessorService.processUpdateInterview,
@@ -117,12 +117,10 @@ const dataHandler = (messageSet, topic, partition) => Promise.each(messageSet, a
   }
   const transactionId = _.uniqueId('transaction_')
   try {
-    if (!topicServiceMapping[topic]) {
-      throw new Error(`Unknown topic: ${topic}`) // normally it never reaches this line
+    if (topicServiceMapping[topic]) {
+      await topicServiceMapping[topic](messageJSON, transactionId)
+      localLogger.debug(`Successfully processed message with count ${messageCount}`)
     }
-    await topicServiceMapping[topic](messageJSON, transactionId)
-
-    localLogger.debug(`Successfully processed message with count ${messageCount}`)
   } catch (err) {
     logger.logFullError(err, { component: 'app' })
   } finally {
