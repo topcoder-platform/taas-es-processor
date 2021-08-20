@@ -46,13 +46,13 @@ async function postMessageToZapier ({ type, payload }) {
  */
 async function processCreate (message, transactionId) {
   const job = message.payload
-  await esClient.createExtra({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id: job.id,
-    transactionId,
-    body: job,
-    refresh: constants.esRefreshOption
-  })
+  // await esClient.createExtra({
+  //   index: config.get('esConfig.ES_INDEX_JOB'),
+  //   id: job.id,
+  //   transactionId,
+  //   body: job,
+  //   refresh: constants.esRefreshOption
+  // })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobCreate,
     payload: job
@@ -110,15 +110,15 @@ processCreate.schema = {
  */
 async function processUpdate (message, transactionId) {
   const data = message.payload
-  await esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id: data.id,
-    transactionId,
-    body: {
-      doc: data
-    },
-    refresh: constants.esRefreshOption
-  })
+  // await esClient.updateExtra({
+  //   index: config.get('esConfig.ES_INDEX_JOB'),
+  //   id: data.id,
+  //   transactionId,
+  //   body: {
+  //     doc: data
+  //   },
+  //   refresh: constants.esRefreshOption
+  // })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobUpdate,
     payload: data

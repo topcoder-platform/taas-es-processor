@@ -126,15 +126,15 @@ async function processUpdate (message, transactionId) {
     index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
     id: data.id
   })
-  await esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
-    id: data.id,
-    transactionId,
-    body: {
-      doc: data
-    },
-    refresh: constants.esRefreshOption
-  })
+  // await esClient.updateExtra({
+  //   index: config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
+  //   id: data.id,
+  //   transactionId,
+  //   body: {
+  //     doc: data
+  //   },
+  //   refresh: constants.esRefreshOption
+  // })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobCandidateUpdate,
     payload: data,
@@ -174,9 +174,9 @@ processDelete.schema = {
 }
 
 module.exports = {
-  processCreate,
-  processUpdate,
-  processDelete
+  // processCreate,
+  processUpdate
+  // processDelete
 }
 
 logger.buildService(module.exports, 'JobCandidateProcessorService')
