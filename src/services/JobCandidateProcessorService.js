@@ -21,10 +21,10 @@ const localLogger = {
  * @returns {undefined}
  */
 async function updateCandidateStatus ({ type, payload, previousData }) {
-  if (previousData.status === payload.status) {
-    localLogger.debug({ context: 'updateCandidateStatus', message: `jobCandidate is already in status: ${payload.status}` })
-    return
-  }
+  // if (previousData.status === payload.status) {
+  //   localLogger.debug({ context: 'updateCandidateStatus', message: `jobCandidate is already in status: ${payload.status}` })
+  //   return
+  // }
   // if (!['rejected', 'shortlist',].includes(payload.status)) {
   if (!['client rejected - screening', 'client rejected - interview', 'interview', 'selected', 'withdrawn', 'withdrawn-prescreen'].includes(payload.status)) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `not interested status: ${payload.status}` })
