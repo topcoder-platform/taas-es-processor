@@ -101,6 +101,7 @@ processCreate.schema = {
           createdAt: Joi.date().required(),
           createdBy: Joi.string().uuid().required(),
           updatedAt: Joi.date().allow(null),
+          viewedByCustomer: Joi.boolean().required(),
           updatedBy: Joi.string().uuid().allow(null),
           status: Joi.jobCandidateStatus().required(),
           externalId: Joi.string().allow(null),
