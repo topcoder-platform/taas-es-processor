@@ -9,10 +9,7 @@ const config = require('config')
 const esClient = helper.getESClient()
 
 const modelIndexMapping = {
-  Job: 'ES_INDEX_JOB',
-  JobCandidate: 'ES_INDEX_JOB_CANDIDATE',
-  ResourceBooking: 'ES_INDEX_RESOURCE_BOOKING',
-  Role: 'ES_INDEX_ROLE'
+  Job: 'ES_INDEX_JOB'
 }
 
 async function showESData () {

@@ -9,10 +9,7 @@ const helper = require('../common/helper')
 async function deleteIndex () {
   logger.info({ component: 'deleteIndex', message: 'ES Index deletion started!' })
   const esClient = helper.getESClient()
-  const indices = [config.get('esConfig.ES_INDEX_JOB'),
-    config.get('esConfig.ES_INDEX_JOB_CANDIDATE'),
-    config.get('esConfig.ES_INDEX_RESOURCE_BOOKING'),
-    config.get('esConfig.ES_INDEX_ROLE')]
+  const indices = [config.get('esConfig.ES_INDEX_JOB')]
   for (const index of indices) {
     await esClient.indices.delete({
       index

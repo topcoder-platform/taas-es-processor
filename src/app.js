@@ -11,12 +11,6 @@ const logger = require('./common/logger')
 const helper = require('./common/helper')
 const JobProcessorService = require('./services/JobProcessorService')
 const JobCandidateProcessorService = require('./services/JobCandidateProcessorService')
-// const ResourceBookingProcessorService = require('./services/ResourceBookingProcessorService')
-// const WorkPeriodProcessorService = require('./services/WorkPeriodProcessorService')
-// const InterviewProcessorService = require('./services/InterviewProcessorService')
-// const WorkPeriodPaymentProcessorService = require('./services/WorkPeriodPaymentProcessorService')
-// const RoleProcessorService = require('./services/RoleProcessorService')
-const ActionProcessorService = require('./services/ActionProcessorService')
 const Mutex = require('async-mutex').Mutex
 const events = require('events')
 
@@ -34,32 +28,7 @@ const topicServiceMapping = {
   // job
   [config.topics.TAAS_JOB_CREATE_TOPIC]: JobProcessorService.processCreate,
   [config.topics.TAAS_JOB_UPDATE_TOPIC]: JobProcessorService.processUpdate,
-  // [config.topics.TAAS_JOB_DELETE_TOPIC]: JobProcessorService.processDelete,
-  // job candidate
-  // [config.topics.TAAS_JOB_CANDIDATE_CREATE_TOPIC]: JobCandidateProcessorService.processCreate,
-  [config.topics.TAAS_JOB_CANDIDATE_UPDATE_TOPIC]: JobCandidateProcessorService.processUpdate,
-  // [config.topics.TAAS_JOB_CANDIDATE_DELETE_TOPIC]: JobCandidateProcessorService.processDelete,
-  // resource booking
-  // [config.topics.TAAS_RESOURCE_BOOKING_CREATE_TOPIC]: ResourceBookingProcessorService.processCreate,
-  // [config.topics.TAAS_RESOURCE_BOOKING_UPDATE_TOPIC]: ResourceBookingProcessorService.processUpdate,
-  // [config.topics.TAAS_RESOURCE_BOOKING_DELETE_TOPIC]: ResourceBookingProcessorService.processDelete,
-  // work period
-  // [config.topics.TAAS_WORK_PERIOD_CREATE_TOPIC]: WorkPeriodProcessorService.processCreate,
-  // [config.topics.TAAS_WORK_PERIOD_UPDATE_TOPIC]: WorkPeriodProcessorService.processUpdate,
-  // [config.topics.TAAS_WORK_PERIOD_DELETE_TOPIC]: WorkPeriodProcessorService.processDelete,
-  // work period payment
-  // [config.topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC]: WorkPeriodPaymentProcessorService.processCreate,
-  // [config.topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC]: WorkPeriodPaymentProcessorService.processUpdate,
-  // interview
-  // [config.topics.TAAS_INTERVIEW_REQUEST_TOPIC]: InterviewProcessorService.processRequestInterview,
-  // [config.topics.TAAS_INTERVIEW_UPDATE_TOPIC]: InterviewProcessorService.processUpdateInterview,
-  // [config.topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC]: InterviewProcessorService.processBulkUpdateInterviews,
-  // role
-  // [config.topics.TAAS_ROLE_CREATE_TOPIC]: RoleProcessorService.processCreate,
-  // [config.topics.TAAS_ROLE_UPDATE_TOPIC]: RoleProcessorService.processUpdate,
-  // [config.topics.TAAS_ROLE_DELETE_TOPIC]: RoleProcessorService.processDelete,
-  // action
-  [config.topics.TAAS_ACTION_RETRY_TOPIC]: ActionProcessorService.processRetry
+  [config.topics.TAAS_JOB_CANDIDATE_UPDATE_TOPIC]: JobCandidateProcessorService.processUpdate
 }
 
 // Start kafka consumer

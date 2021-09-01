@@ -6,12 +6,10 @@ const AWS = require('aws-sdk')
 const config = require('config')
 const request = require('superagent')
 const logger = require('./logger')
-const errors = require('./errors')
 const elasticsearch = require('@elastic/elasticsearch')
 const _ = require('lodash')
 const { Mutex } = require('async-mutex')
 const m2mAuth = require('tc-core-library-js').auth.m2m
-const busApi = require('@topcoder-platform/topcoder-bus-api-wrapper')
 
 AWS.config.region = config.esConfig.AWS_REGION
 
@@ -87,58 +85,6 @@ function getESClient () {
     }
   }
 
-  // create document or catch conflict error
-  esClient.createExtra = async function (data) {
-    try {
-      await esClient.create(data)
-    } catch (err) {
-      if (err.statusCode === 409) {
-        throw new errors.ConflictError(`id: ${data.id} "${data.index}" already exists`)
-      }
-      throw err
-    }
-  }
-
-  // update document or catch not found error
-  esClient.updateExtra = async function (data) {
-    try {
-      await esClient.update(data)
-    } catch (err) {
-      if (err.statusCode === 404) {
-        throw new errors.NotFoundError(`id: ${data.id} "${data.index}" not found`)
-      }
-      throw err
-    }
-  }
-
-  // get document or catch not found error
-  esClient.getExtra = async function (data) {
-    let doc
-
-    try {
-      doc = await esClient.getSource(data)
-    } catch (err) {
-      if (err.statusCode === 404) {
-        throw new errors.NotFoundError(`id: ${data.id} "${data.index}" not found`)
-      }
-      throw err
-    }
-
-    return doc
-  }
-
-  // delete document or catch not found error
-  esClient.deleteExtra = async function (data) {
-    try {
-      await esClient.delete(data)
-    } catch (err) {
-      if (err.statusCode === 404) {
-        throw new errors.NotFoundError(`id: ${data.id} "${data.index}" not found`)
-      }
-      throw err
-    }
-  }
-
   return esClient
 }
 
@@ -180,68 +126,10 @@ async function postMessageViaWebhook (webhook, message) {
   await request.post(webhook).send(message)
 }
 
-let busApiClient
-
-/**
- * Get bus api client.
- *
- * @returns {Object} the bus api client
- */
-function getBusApiClient () {
-  if (busApiClient) {
-    return busApiClient
-  }
-  busApiClient = busApi(
-    _.assign(_.pick(config.auth0, [
-      'AUTH0_URL',
-      'AUTH0_AUDIENCE',
-      'TOKEN_CACHE_TIME',
-      'AUTH0_CLIENT_ID',
-      'AUTH0_CLIENT_SECRET',
-      'AUTH0_PROXY_SERVER_URL'
-    ]), _.pick(config, 'BUSAPI_URL'),
-    _.pick(config.topics, 'KAFKA_ERROR_TOPIC'))
-
-  )
-  return busApiClient
-}
-
-/**
- * Send Kafka event message
- * @param {String} topic the topic name
- * @param {Object} payload the payload
- */
-async function postEvent (topic, payload) {
-  logger.debug({ component: 'helper', context: 'postEvent', message: `Posting event to Kafka topic ${topic}, ${JSON.stringify(payload)}` })
-
-  const client = getBusApiClient()
-  const message = {
-    topic,
-    originator: config.KAFKA_MESSAGE_ORIGINATOR,
-    timestamp: new Date().toISOString(),
-    'mime-type': 'application/json',
-    payload
-  }
-  await client.postEvent(message)
-}
-
-/**
- * Sleep for a given number of milliseconds.
- *
- * @param {Number} milliseconds the sleep time
- * @returns {undefined}
- */
-async function sleep (milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds))
-}
-
 module.exports = {
-  sleep,
   getKafkaOptions,
   getESClient,
   checkEsMutexRelease,
   getM2MToken,
-  postMessageViaWebhook,
-  getBusApiClient,
-  postEvent
+  postMessageViaWebhook
 }
