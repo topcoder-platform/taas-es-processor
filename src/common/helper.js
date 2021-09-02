@@ -2,24 +2,13 @@
  * Contains generic helper methods
  */
 
-const AWS = require('aws-sdk')
 const config = require('config')
 const request = require('superagent')
 const logger = require('./logger')
-const elasticsearch = require('@elastic/elasticsearch')
 const _ = require('lodash')
-const { Mutex } = require('async-mutex')
 const m2mAuth = require('tc-core-library-js').auth.m2m
 
-AWS.config.region = config.esConfig.AWS_REGION
-
-// Elasticsearch client
-let esClient
-let transactionId
 let m2m
-// Mutex to ensure that only one elasticsearch action is carried out at any given time
-const esClientMutex = new Mutex()
-const mutexReleaseMap = {}
 
 /**
  * Get Kafka options
@@ -31,76 +20,6 @@ function getKafkaOptions () {
     options.ssl = { cert: config.KAFKA_CLIENT_CERT, key: config.KAFKA_CLIENT_CERT_KEY }
   }
   return options
-}
-
-/**
- * Get ES Client
- * @return {Object} Elasticsearch Client Instance
- */
-function getESClient () {
-  if (esClient) {
-    return esClient
-  }
-  const host = config.esConfig.HOST
-  const cloudId = config.esConfig.ELASTICCLOUD.id
-
-  if (cloudId) {
-    // Elastic Cloud configuration
-    esClient = new elasticsearch.Client({
-      cloud: {
-        id: cloudId
-      },
-      auth: {
-        username: config.esConfig.ELASTICCLOUD.username,
-        password: config.esConfig.ELASTICCLOUD.password
-      }
-    })
-  } else {
-    esClient = new elasticsearch.Client({
-      node: host
-    })
-  }
-
-  // Patch the transport to enable mutex
-  esClient.transport.originalRequest = esClient.transport.request
-  esClient.transport.request = async (params) => {
-    const tId = _.get(params.querystring, 'transactionId')
-    params.querystring = _.omit(params.querystring, 'transactionId')
-    if (!tId || tId !== transactionId) {
-      const release = await esClientMutex.acquire()
-      mutexReleaseMap[tId || 'noTransaction'] = release
-      transactionId = tId
-    }
-    try {
-      return await esClient.transport.originalRequest(params)
-    } finally {
-      if (params.method !== 'GET' || !tId) {
-        const release = mutexReleaseMap[tId || 'noTransaction']
-        delete mutexReleaseMap[tId || 'noTransaction']
-        transactionId = undefined
-        if (release) {
-          release()
-        }
-      }
-    }
-  }
-
-  return esClient
-}
-
-/**
- * Ensure the esClient mutex is released
- * @param {String} tId transactionId
- */
-function checkEsMutexRelease (tId) {
-  if (tId === transactionId) {
-    const release = mutexReleaseMap[tId]
-    delete mutexReleaseMap[tId]
-    transactionId = undefined
-    if (release) {
-      release()
-    }
-  }
 }
 
 /*
@@ -126,10 +45,24 @@ async function postMessageViaWebhook (webhook, message) {
   await request.post(webhook).send(message)
 }
 
+/**
+ * Get job by jobId
+ *
+ * @param {String} jobId jobId
+ * @returns {undefined}
+ */
+async function getJobById (jobId) {
+  logger.debug({ component: 'helper', context: 'getJobById', message: `jobId: ${jobId}` })
+
+  const token = await getM2MToken()
+  const { body: job } = await request.get(`${config.TAAS_API_URL}/jobs/${jobId}`)
+    .set('Authorization', `Bearer ${token}`)
+  return job
+}
+
 module.exports = {
   getKafkaOptions,
-  getESClient,
-  checkEsMutexRelease,
+  getJobById,
   getM2MToken,
   postMessageViaWebhook
 }

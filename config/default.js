@@ -17,25 +17,14 @@ module.exports = {
   // The originator value for the kafka messages
   KAFKA_MESSAGE_ORIGINATOR: process.env.KAFKA_MESSAGE_ORIGINATOR || 'taas-es-processor',
 
+  TAAS_API_URL: process.env.TAAS_API_URL || 'https://api.topcoder-dev.com/v5',
+
   topics: {
     // topics for job service
     TAAS_JOB_CREATE_TOPIC: process.env.TAAS_JOB_CREATE_TOPIC || 'taas.job.create',
     TAAS_JOB_UPDATE_TOPIC: process.env.TAAS_JOB_UPDATE_TOPIC || 'taas.job.update',
     // topics for jobcandidate service
     TAAS_JOB_CANDIDATE_UPDATE_TOPIC: process.env.TAAS_JOB_CANDIDATE_UPDATE_TOPIC || 'taas.jobcandidate.update'
-  },
-  esConfig: {
-    HOST: process.env.ES_HOST || 'http://localhost:9200',
-
-    ELASTICCLOUD: {
-      id: process.env.ELASTICCLOUD_ID,
-      username: process.env.ELASTICCLOUD_USERNAME,
-      password: process.env.ELASTICCLOUD_PASSWORD
-    },
-
-    AWS_REGION: process.env.AWS_REGION || 'us-east-1', // AWS Region to be used if we use AWS ES
-
-    ES_INDEX_JOB: process.env.ES_INDEX_JOB || 'job'
   },
 
   auth0: {

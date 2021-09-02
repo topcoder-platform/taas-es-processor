@@ -8,8 +8,6 @@ const helper = require('../common/helper')
 const constants = require('../common/constants')
 const config = require('config')
 
-const esClient = helper.getESClient()
-
 const localLogger = {
   debug: ({ context, message }) => logger.debug({ component: 'JobCandidateProcessorService', context, message })
 }
@@ -32,10 +30,9 @@ async function updateCandidateStatus ({ type, payload }) {
     localLogger.debug({ context: 'updateCandidateStatus', message: `id: ${jobCandidate.id} candidate without externalId - ignored` })
     return
   }
-  const { body: job } = await esClient.getSource({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id: jobCandidate.jobId
-  })
+
+  const job = await helper.getJobById(jobCandidate.jobId)
+
   const message = {
     type,
     status: jobCandidate.status,

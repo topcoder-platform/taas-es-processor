@@ -93,7 +93,6 @@ const dataHandler = (messageSet, topic, partition) => Promise.each(messageSet, a
   } catch (err) {
     logger.logFullError(err, { component: 'app' })
   } finally {
-    helper.checkEsMutexRelease(transactionId)
     localLogger.debug(`Commiting offset after processing message with count ${messageCount}`)
 
     // Commit offset regardless of error

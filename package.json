@@ -7,10 +7,7 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "lint": "standard",
-    "lint:fix": "standard --fix",
-    "create-index": "node src/scripts/createIndex.js",
-    "delete-index": "node src/scripts/deleteIndex.js",
-    "view-data": "node src/scripts/view-data.js"
+    "lint:fix": "standard --fix"
   },
   "author": "TCSCODER",
   "license": "none",
@@ -21,10 +18,8 @@
     "superagent": "^5.1.0"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.9.1",
     "@hapi/joi": "^15.1.0",
     "async-mutex": "^0.2.4",
-    "aws-sdk": "^2.476.0",
     "bluebird": "^3.5.5",
     "config": "^3.1.0",
     "dotenv": "^10.0.0",
