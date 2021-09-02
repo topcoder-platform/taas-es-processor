@@ -3,7 +3,6 @@
 ## Dependencies
 
 - Nodejs(v12+)
-- ElasticSearch
 - Kafka
 
 ## Configuration
@@ -22,41 +21,10 @@ The following parameters can be set in config files or in env variables:
     if provided, it can be either path to private key file or private key content
 - `KAFKA_MESSAGE_ORIGINATOR`: The originator value for the kafka messages
 - `KAFKA_GROUP_ID`: the Kafka group id
-- `topics.KAFKA_ERROR_TOPIC`: the error topic at which bus api will publish any errors
 - `topics.TAAS_JOB_CREATE_TOPIC`: the create job entity Kafka message topic
 - `topics.TAAS_JOB_UPDATE_TOPIC`: the update job entity Kafka message topic
-- `topics.TAAS_JOB_DELETE_TOPIC`: the delete job entity Kafka message topic
-- `topics.TAAS_JOB_CANDIDATE_CREATE_TOPIC`: the create job candidate entity Kafka message topic
 - `topics.TAAS_JOB_CANDIDATE_UPDATE_TOPIC`: the update job candidate entity Kafka message topic
-- `topics.TAAS_JOB_CANDIDATE_DELETE_TOPIC`: the delete job candidate entity Kafka message topic
-- `topics.TAAS_RESOURCE_BOOKING_CREATE_TOPIC`: the create resource booking entity Kafka message topic
-- `topics.TAAS_RESOURCE_BOOKING_UPDATE_TOPIC`: the update resource booking entity Kafka message topic
-- `topics.TAAS_RESOURCE_BOOKING_DELETE_TOPIC`: the delete resource booking entity Kafka message topic
-- `topics.TAAS_WORK_PERIOD_CREATE_TOPIC`: the create work period entity Kafka message topic
-- `topics.TAAS_WORK_PERIOD_UPDATE_TOPIC`: the update work period entity Kafka message topic
-- `topics.TAAS_WORK_PERIOD_DELETE_TOPIC`: the delete work period entity Kafka message topic
-- `topics.TAAS_WORK_PERIOD_PAYMENT_CREATE_TOPIC`: the create work period payment entity Kafka message topic
-- `topics.TAAS_WORK_PERIOD_PAYMENT_UPDATE_TOPIC`: the update work period payment entity Kafka message topic
-- `topics.TAAS_INTERVIEW_REQUEST_TOPIC`: the request interview entity Kafka message topic
-- `topics.TAAS_INTERVIEW_UPDATE_TOPIC`: the update interview entity Kafka message topic
-- `topics.TAAS_INTERVIEW_BULK_UPDATE_TOPIC`: the bulk update interview entity Kafka message topic
-- `topics.TAAS_ROLE_CREATE_TOPIC`: the create role entity Kafka message topic
-- `topics.TAAS_ROLE_UPDATE_TOPIC`: the update role entity Kafka message topic
-- `topics.TAAS_ROLE_DELETE_TOPIC`: the delete role entity Kafka message topic
-- `topics.TAAS_ACTION_RETRY_TOPIC`: the retry process Kafka message topic
-- `MAX_RETRY`: maximum allowed retry count for failed operations for sending `taas.action.retry` message
-- `BASE_RETRY_DELAY`: base amount of retry delay (ms) for failed operations
-- `BUSAPI_URL`: Topcoder Bus API URL
-- `esConfig.HOST`: Elasticsearch host
-- `esConfig.AWS_REGION`: The Amazon region to use when using AWS Elasticsearch service
-- `esConfig.ELASTICCLOUD.id`: The elastic cloud id, if your elasticsearch instance is hosted on elastic cloud. DO NOT provide a value for ES_HOST if you are using this
-- `esConfig.ELASTICCLOUD.username`: The elastic cloud username for basic authentication. Provide this only if your elasticsearch instance is hosted on elastic cloud
-- `esConfig.ELASTICCLOUD.password`: The elastic cloud password for basic authentication. Provide this only if your elasticsearch instance is hosted on elastic cloud
-- `esConfig.ES_INDEX_JOB`: the index name for job
-- `esConfig.ES_INDEX_JOB_CANDIDATE`: the index name for job candidate
-- `esConfig.ES_INDEX_RESOURCE_BOOKING`: the index name for resource booking
-- `esConfig.ES_INDEX_ROLE`: the index name for role
-
+- `TAAS_API_URL`: the taas api url
 - `auth0.AUTH0_URL`: Auth0 URL, used to get TC M2M token
 - `auth0.AUTH0_AUDIENCE`: Auth0 audience, used to get TC M2M token
 - `auth0.AUTH0_CLIENT_ID`: Auth0 client id, used to get TC M2M token
@@ -71,7 +39,7 @@ The following parameters can be set in config files or in env variables:
 - `zapier.ZAPIER_JOB_CANDIDATE_SWITCH`: decides whether posting job candidate related message to zapier or not; possible values are `ON` and `OFF`, default is `OFF`
 - `zapier.ZAPIER_JOB_CANDIDATE_WEBHOOK`: the remote zapier zap webhook url for posting job candidate related message
 
-## Local Kafka and ElasticSearch setup
+## Local Kafka setup
 
 1. Navigate to the directory `local`
 
@@ -81,30 +49,21 @@ The following parameters can be set in config files or in env variables:
     docker-compose up -d
     ```
 
-3. initialize Elasticsearch, create configured Elasticsearch index:
-
-    ``` bash
-    npm run delete-index # run this if you already created index
-    npm run create-index
-    ```
-
 ## Local deployment
 
-0. Make sure that Kafka and Elasticsearch is running as per instructions above.
-
-1. Make sure to use Node v12+ by command `node -v`. We recommend using [NVM](https://github.com/nvm-sh/nvm) to quickly switch to the right version:
+0. Make sure to use Node v12+ by command `node -v`. We recommend using [NVM](https://github.com/nvm-sh/nvm) to quickly switch to the right version:
 
    ```bash
    nvm use
    ```
 
-2. From the project root directory, run the following command to install the dependencies
+1. From the project root directory, run the following command to install the dependencies
 
     ```bash
     npm install
     ```
 
-3. To run linters if required
+2. To run linters if required
 
     ```bash
     npm run lint
@@ -116,7 +75,7 @@ The following parameters can be set in config files or in env variables:
     npm run lint:fix
     ```
 
-4. Local config
+3. Local config
 
    In the `taas-es-processor` root directory create `.env` file with the next environment variables. Values for **Auth0 config** should be shared with you on the forum.<br>
 
@@ -131,7 +90,7 @@ The following parameters can be set in config files or in env variables:
       - Values from this file would be automatically used by many `npm` commands.
       - ⚠️ Never commit this file or its copy to the repository!
 
-5. Start the processor and health check dropin
+4. Start the processor and health check dropin
 
     ```bash
     npm start
@@ -145,7 +104,7 @@ To run the processor using docker, follow the below steps
 
 2. Rename the file `sample.api.env` to `api.env`
 
-3. Set the required Kafka url and ElasticSearch host in the file `api.env`.
+3. Set the required Kafka url in the file `api.env`.
 
     Note that you can also add other variables to `api.env`, with `<key>=<value>` format per line.
     If using AWS ES you should add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` variables as well.
@@ -158,20 +117,3 @@ To run the processor using docker, follow the below steps
     ```
 
 5. When you are running the application for the first time, It will take some time initially to download the image and install the dependencies
-
-## Unit Tests and E2E Tests
-
-### Unit Tests
-- Run `npm run test` to execute unit tests.
-- Run `npm run test:cov` to execute unit tests and generate coverage report.
-
-### E2E Tests
-Before running e2e tests, make sure index are created and the processor app is not running. Existing documents will be remove
-from ES before and after tests.
-
-- RUN `npm run e2e` to execute e2e tests.
-- RUN `npm run e2e:cov` to execute e2e tests and generate coverage report.
-
-## Verification
-
-see [VERIFICATION.md](VERIFICATION.md)
