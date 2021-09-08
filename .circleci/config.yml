@@ -72,7 +72,7 @@ workflows:
               only:
                 - dev
                 - dev-circleci
-                - change-validatations-in-job-j
+                - feature/shapeup4-cqrs-update2
 
       # Production builds are exectuted only on tagged commits to the
       # master branch.
