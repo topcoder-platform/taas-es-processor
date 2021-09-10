@@ -2,7 +2,7 @@
  * Job Processor Service
  */
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi').extend(require('@joi/date'))
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
@@ -50,49 +50,50 @@ async function processCreate (message, transactionId) {
   })
 }
 
-processCreate.schema = {
-  message: Joi.object()
-    .keys({
-      topic: Joi.string().required(),
-      originator: Joi.string().required(),
-      timestamp: Joi.date().required(),
-      'mime-type': Joi.string().required(),
-      payload: Joi.object()
-        .keys({
-          id: Joi.string().uuid().required(),
-          projectId: Joi.number().integer().required(),
-          externalId: Joi.string().allow(null),
-          description: Joi.stringAllowEmpty().allow(null),
-          title: Joi.title().required(),
-          startDate: Joi.date().allow(null),
-          duration: Joi.number().integer().min(1).allow(null),
-          numPositions: Joi.number().integer().min(1).required(),
-          resourceType: Joi.stringAllowEmpty().allow(null),
-          rateType: Joi.rateType().allow(null),
-          workload: Joi.workload().allow(null),
-          skills: Joi.array().items(Joi.string().uuid()).required(),
-          roles: Joi.array().items(Joi.string().uuid()).allow(null),
-          createdAt: Joi.date().required(),
-          createdBy: Joi.string().uuid().required(),
-          updatedAt: Joi.date().allow(null),
-          updatedBy: Joi.string().uuid().allow(null),
-          status: Joi.jobStatus().required(),
-          isApplicationPageActive: Joi.boolean().required(),
-          minSalary: Joi.number().integer().allow(null),
-          maxSalary: Joi.number().integer().allow(null),
-          hoursPerWeek: Joi.number().integer().allow(null),
-          jobLocation: Joi.stringAllowEmpty().allow(null),
-          jobTimezone: Joi.stringAllowEmpty().allow(null),
-          currency: Joi.stringAllowEmpty().allow(null),
-          roleIds: Joi.array()
-            .items(Joi.string().uuid().required())
-            .allow(null)
-        })
-        .required()
-    })
-    .required(),
-  transactionId: Joi.string().required()
-}
+processCreate.schema = Joi.object()
+  .keys({
+    message: Joi.object()
+      .keys({
+        topic: Joi.string().required(),
+        originator: Joi.string().required(),
+        timestamp: Joi.date().required(),
+        'mime-type': Joi.string().required(),
+        payload: Joi.object()
+          .keys({
+            id: Joi.string().uuid().required(),
+            projectId: Joi.number().integer().required(),
+            externalId: Joi.string().allow(null),
+            description: Joi.stringAllowEmpty().allow(null),
+            title: Joi.title().required(),
+            startDate: Joi.date().format('YYYY-MM-DD').allow(null),
+            duration: Joi.number().integer().min(1).allow(null),
+            numPositions: Joi.number().integer().min(1).required(),
+            resourceType: Joi.stringAllowEmpty().allow(null),
+            rateType: Joi.rateType().allow(null),
+            workload: Joi.workload().allow(null),
+            skills: Joi.array().items(Joi.string().uuid()).required(),
+            roles: Joi.array().items(Joi.string().uuid()).allow(null),
+            createdAt: Joi.date().required(),
+            createdBy: Joi.string().uuid().required(),
+            updatedAt: Joi.date().allow(null),
+            updatedBy: Joi.string().uuid().allow(null),
+            status: Joi.jobStatus().required(),
+            isApplicationPageActive: Joi.boolean().required(),
+            minSalary: Joi.number().integer().allow(null),
+            maxSalary: Joi.number().integer().allow(null),
+            hoursPerWeek: Joi.number().integer().allow(null),
+            jobLocation: Joi.stringAllowEmpty().allow(null),
+            jobTimezone: Joi.stringAllowEmpty().allow(null),
+            currency: Joi.stringAllowEmpty().allow(null),
+            roleIds: Joi.array()
+              .items(Joi.string().uuid().required())
+              .allow(null)
+          })
+          .required()
+      })
+      .required(),
+    transactionId: Joi.string().required()
+  })
 
 /**
  * Process update entity message

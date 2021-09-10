@@ -18,12 +18,13 @@
     "superagent": "^5.1.0"
   },
   "dependencies": {
-    "@hapi/joi": "^15.1.0",
+    "@joi/date": "^2.1.0",
     "async-mutex": "^0.2.4",
     "bluebird": "^3.5.5",
     "config": "^3.1.0",
     "dotenv": "^10.0.0",
     "get-parameter-names": "^0.3.0",
+    "joi": "^17.4.2",
     "lodash": "^4.17.20",
     "no-kafka": "^3.4.3",
     "tc-core-library-js": "^2.4.1",
