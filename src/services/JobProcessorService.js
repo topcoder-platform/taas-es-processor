@@ -8,8 +8,6 @@ const helper = require('../common/helper')
 const constants = require('../common/constants')
 const config = require('config')
 
-const esClient = helper.getESClient()
-
 const localLogger = {
   debug: ({ context, message }) => logger.debug({ component: 'JobProcessorService', context, message })
 }
@@ -46,13 +44,6 @@ async function postMessageToZapier ({ type, payload }) {
  */
 async function processCreate (message, transactionId) {
   const job = message.payload
-  await esClient.createExtra({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id: job.id,
-    transactionId,
-    body: job,
-    refresh: constants.esRefreshOption
-  })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobCreate,
     payload: job
@@ -110,15 +101,6 @@ processCreate.schema = {
  */
 async function processUpdate (message, transactionId) {
   const data = message.payload
-  await esClient.updateExtra({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id: data.id,
-    transactionId,
-    body: {
-      doc: data
-    },
-    refresh: constants.esRefreshOption
-  })
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobUpdate,
     payload: data
@@ -127,39 +109,9 @@ async function processUpdate (message, transactionId) {
 
 processUpdate.schema = processCreate.schema
 
-/**
- * Process delete entity message
- * @param {Object} message the kafka message
- * @param {String} transactionId
- */
-async function processDelete (message, transactionId) {
-  const id = message.payload.id
-  await esClient.deleteExtra({
-    index: config.get('esConfig.ES_INDEX_JOB'),
-    id,
-    transactionId,
-    refresh: constants.esRefreshOption
-  })
-}
-
-processDelete.schema = {
-  message: Joi.object().keys({
-    topic: Joi.string().required(),
-    originator: Joi.string().required(),
-    timestamp: Joi.date().required(),
-    'mime-type': Joi.string().required(),
-    key: Joi.string().allow(null),
-    payload: Joi.object().keys({
-      id: Joi.string().uuid().required()
-    }).required()
-  }).required(),
-  transactionId: Joi.string().required()
-}
-
 module.exports = {
   processCreate,
-  processUpdate,
-  processDelete
+  processUpdate
 }
 
 logger.buildService(module.exports, 'JobProcessorService')

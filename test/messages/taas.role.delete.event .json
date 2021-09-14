@@ -1,9 +1,0 @@
-{
-    "topic": "taas.role.delete",
-    "originator": "taas-api",
-    "timestamp": "2021-05-27T21:45:09.388Z",
-    "mime-type": "application/json",
-    "payload": {
-        "id": "e7b7e818-40d4-4102-b486-09bdd21400b8"
-    }
-}
