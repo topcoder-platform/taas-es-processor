@@ -2,7 +2,7 @@
  * Jobcandidate Processor Service
  */
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
@@ -74,8 +74,9 @@ async function processUpdate (message, transactionId) {
   })
 }
 
-processUpdate.schema = {
-  message: Joi.object()
+processUpdate.schema = Joi.object()
+  .keys({
+    message: Joi.object()
     .keys({
       topic: Joi.string().required(),
       originator: Joi.string().required(),
@@ -100,8 +101,8 @@ processUpdate.schema = {
         .required()
     })
     .required(),
-  transactionId: Joi.string().required()
-}
+    transactionId: Joi.string().required()
+  })
 
 module.exports = {
   processUpdate
