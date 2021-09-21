@@ -87,7 +87,11 @@ processCreate.schema = Joi.object()
             currency: Joi.stringAllowEmpty().allow(null),
             roleIds: Joi.array()
               .items(Joi.string().uuid().required())
-              .allow(null)
+              .allow(null),
+            showInHotList: Joi.boolean(),
+            featured: Joi.boolean(),
+            hotListExcerpt: Joi.stringAllowEmpty(),
+            jobTag: Joi.jobTag()
           })
           .required()
       })
