@@ -71,8 +71,6 @@ workflows:
             branches:
               only:
                 - dev
-                - dev-circleci
-                - gigs-job-model
 
       # Production builds are exectuted only on tagged commits to the
       # master branch.
