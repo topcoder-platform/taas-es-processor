@@ -72,7 +72,7 @@ workflows:
               only:
                 - dev
                 - dev-circleci
-                - feature/shapeup4-cqrs-update2
+                - gigs-job-model
 
       # Production builds are exectuted only on tagged commits to the
       # master branch.
