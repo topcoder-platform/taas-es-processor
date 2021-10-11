@@ -3,7 +3,7 @@
  */
 
 const _ = require('lodash')
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const util = require('util')
 const config = require('config')
 const getParams = require('get-parameter-names')

@@ -2,7 +2,7 @@
  * Jobcandidate Processor Service
  */
 
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
@@ -74,34 +74,35 @@ async function processUpdate (message, transactionId) {
   })
 }
 
-processUpdate.schema = {
-  message: Joi.object()
-    .keys({
-      topic: Joi.string().required(),
-      originator: Joi.string().required(),
-      timestamp: Joi.date().required(),
-      'mime-type': Joi.string().required(),
-      key: Joi.string().allow(null),
-      payload: Joi.object()
-        .keys({
-          id: Joi.string().uuid().required(),
-          jobId: Joi.string().uuid().required(),
-          userId: Joi.string().uuid().required(),
-          createdAt: Joi.date().required(),
-          createdBy: Joi.string().uuid().required(),
-          updatedAt: Joi.date().allow(null),
-          viewedByCustomer: Joi.boolean().required(),
-          updatedBy: Joi.string().uuid().allow(null),
-          status: Joi.jobCandidateStatus().required(),
-          externalId: Joi.string().allow(null),
-          resume: Joi.string().uri().allow(null).allow(''),
-          remark: Joi.stringAllowEmpty().allow(null)
-        })
-        .required()
-    })
-    .required(),
-  transactionId: Joi.string().required()
-}
+processUpdate.schema = Joi.object()
+  .keys({
+    message: Joi.object()
+      .keys({
+        topic: Joi.string().required(),
+        originator: Joi.string().required(),
+        timestamp: Joi.date().required(),
+        'mime-type': Joi.string().required(),
+        key: Joi.string().allow(null),
+        payload: Joi.object()
+          .keys({
+            id: Joi.string().uuid().required(),
+            jobId: Joi.string().uuid().required(),
+            userId: Joi.string().uuid().required(),
+            createdAt: Joi.date().required(),
+            createdBy: Joi.string().uuid().required(),
+            updatedAt: Joi.date().allow(null),
+            viewedByCustomer: Joi.boolean().required(),
+            updatedBy: Joi.string().uuid().allow(null),
+            status: Joi.jobCandidateStatus().required(),
+            externalId: Joi.string().allow(null),
+            resume: Joi.string().uri().allow(null).allow(''),
+            remark: Joi.stringAllowEmpty().allow(null)
+          })
+          .required()
+      })
+      .required(),
+    transactionId: Joi.string().required()
+  })
 
 module.exports = {
   processUpdate

@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi')
+const Joi = require('joi')
 const config = require('config')
 const constants = require('./common/constants')
 
@@ -8,6 +8,7 @@ Joi.rateType = () => Joi.string().valid('hourly', 'daily', 'weekly', 'monthly', 
 Joi.jobStatus = () => Joi.string().valid('sourcing', 'in-review', 'assigned', 'closed', 'cancelled')
 Joi.jobCandidateStatus = () => Joi.string().valid('open', 'placed', 'selected', 'client rejected - screening', 'client rejected - interview', 'rejected - other', 'cancelled', 'interview', 'topcoder-rejected', 'applied', 'rejected-pre-screen', 'skills-test', 'skills-test', 'phone-screen', 'job-closed', 'offered', 'withdrawn', 'withdrawn-prescreen')
 Joi.workload = () => Joi.string().valid('full-time', 'fractional')
+Joi.jobTag = () => Joi.string().valid('New', '$$$', 'Hot').allow('')
 Joi.title = () => Joi.string().max(128)
 // Empty string is not allowed by Joi by default and must be enabled with allow('').
 // See https://joi.dev/api/?v=17.3.0#string fro details why it's like this.
