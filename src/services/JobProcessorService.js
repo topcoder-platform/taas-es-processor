@@ -91,7 +91,9 @@ processCreate.schema = Joi.object()
             showInHotList: Joi.boolean().default(false),
             featured: Joi.boolean().default(false),
             hotListExcerpt: Joi.stringAllowEmpty().default(''),
-            jobTag: Joi.jobTag().default('')
+            jobTag: Joi.jobTag().default(''),
+            rcrmStatus: Joi.jobRcrmStatus().default(null),
+            rcrmReason: Joi.string().allow(null)
           })
           .required()
       })
