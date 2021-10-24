@@ -21,7 +21,7 @@
     "@joi/date": "^2.1.0",
     "async-mutex": "^0.2.4",
     "bluebird": "^3.5.5",
-    "config": "^3.1.0",
+    "config": "^3.3.6",
     "dotenv": "^10.0.0",
     "get-parameter-names": "^0.3.0",
     "joi": "^17.4.2",
