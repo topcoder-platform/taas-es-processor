@@ -1,5 +1,5 @@
 # Use the base image with Node.js 8.11.3
-FROM node:12.16.3
+FROM node:12.22.1
 
 # Set working directory for future use
 WORKDIR /taas-es-processor
