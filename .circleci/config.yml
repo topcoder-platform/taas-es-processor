@@ -70,7 +70,7 @@ workflows:
           filters:
             branches:
               only:
-                - circleci
+                - disable-zapier-trigger
 
       # Production builds are exectuted only on tagged commits to the
       # master branch.
