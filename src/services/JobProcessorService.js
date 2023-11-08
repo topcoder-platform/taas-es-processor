@@ -71,7 +71,7 @@ processCreate.schema = Joi.object()
             resourceType: Joi.stringAllowEmpty().allow(null),
             rateType: Joi.rateType().allow(null),
             workload: Joi.workload().allow(null),
-            skills: Joi.array().items(Joi.string().uuid()).required(),
+            skills: Joi.array().required(),
             roles: Joi.array().items(Joi.string().uuid()).allow(null),
             createdAt: Joi.date().required(),
             createdBy: Joi.string().uuid().required(),
