@@ -36,21 +36,26 @@ async function createJob(job) {
     }
 
     try {
-        const data = await superagent
-            .post(`${config.RCRM.API_BASE}/jobs`)
-            .set('Content-Type', 'application/json')
-            .set('Accept', 'application/json')
-            .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
-            .send({
-                name: job.title,
-                number_of_openings: job.numPositions,
-                company_slug: config.RCRM.COMPANY_SLUG,
-                contact_slug: config.RCRM.CONTACT_SLUG,
-                job_description_text: job.description,
-                currency_id: 2,
-                custom_fields,
-                enable_job_application_form: 0
-            })
+        const data = await new Promise((resolve, reject) => {
+            superagent
+                .post(`${config.RCRM.API_BASE}/jobs`)
+                .set('Content-Type', 'application/json')
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
+                .send({
+                    name: job.title,
+                    number_of_openings: job.numPositions,
+                    company_slug: config.RCRM.COMPANY_SLUG,
+                    contact_slug: config.RCRM.CONTACT_SLUG,
+                    job_description_text: job.description,
+                    currency_id: 2,
+                    custom_fields,
+                    enable_job_application_form: 0
+                })
+                .end((error, res) => {
+                    error ? reject(error) : resolve(res);
+                });
+        })
 
         localLogger.debug({ context: 'processCreate:add-job to RCRM done', message: JSON.stringify(data) });
     } catch (error) {
