@@ -17,7 +17,7 @@ async function createJob(job) {
     if (job.duration) {
         custom_fields.push({
             field_id: config.RCRM.CREATE_JOB_FIELD_DURATION,
-            value: job.duration
+            value: `${job.duration}`
         })
     }
 
@@ -39,6 +39,7 @@ async function createJob(job) {
         const rsp = await request
             .post(`${config.RCRM.API_BASE}/jobs`)
             .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
+            .set('accept', 'json')
             .send({
                 name: job.title,
                 number_of_openings: job.numPositions,
@@ -50,9 +51,9 @@ async function createJob(job) {
                 enable_job_application_form: 0
             })
 
-        localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) });
+        localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) })
     } catch (error) {
-        localLogger.debug({ context: 'createJob error', message: error.message || error.toString() })
+        console.error('createJob error', error)
     }
 }
 

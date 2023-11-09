@@ -81,6 +81,7 @@ workflows:
             branches:
               only:
                 - dev
+                - bypass-zapier
 
       - "build-qa":
           context : org-global
