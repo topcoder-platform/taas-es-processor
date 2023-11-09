@@ -1,5 +1,5 @@
 const config = require('config')
-const axios = require('axios')
+const superagent = require('superagent')
 const logger = require('../common/logger')
 
 const localLogger = {
@@ -35,28 +35,23 @@ async function createJob(job) {
         })
     }
 
-    const options = {
-        method: 'POST',
-        url: `${config.RCRM.API_BASE}/jobs`,
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: `Bearer ${config.RCRM.API_KEY}`
-        },
-        data: {
-            name: job.title,
-            number_of_openings: job.numPositions,
-            company_slug: config.RCRM.COMPANY_SLUG,
-            contact_slug: config.RCRM.CONTACT_SLUG,
-            job_description_text: job.description,
-            currency_id: 2,
-            custom_fields,
-            enable_job_application_form: 0
-        }
-    };
-
     try {
-        const { data } = await axios.request(options);
+        const data = await superagent
+            .post(`${config.RCRM.API_BASE}/jobs`)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
+            .send({
+                name: job.title,
+                number_of_openings: job.numPositions,
+                company_slug: config.RCRM.COMPANY_SLUG,
+                contact_slug: config.RCRM.CONTACT_SLUG,
+                job_description_text: job.description,
+                currency_id: 2,
+                custom_fields,
+                enable_job_application_form: 0
+            })
+
         localLogger.debug({ context: 'processCreate:add-job to RCRM done', message: JSON.stringify(data) });
     } catch (error) {
         localLogger.debug({ context: 'processCreate', message: error.message || error.toString() })
