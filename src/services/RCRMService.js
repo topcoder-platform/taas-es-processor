@@ -53,7 +53,7 @@ async function createJob(job) {
 
         localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) })
     } catch (error) {
-        localLogger.debug({ context: 'createJob error', message: error })
+        localLogger.debug({ context: 'createJob error', message: JSON.stringify(error) })
     }
 }
 
