@@ -57,10 +57,10 @@ async function createJob(job) {
     try {
         const rsp = await fetch(`${config.RCRM.API_BASE}/jobs`, options);
         const data = await rsp.json();
-        
-        localLogger.debug({ context: 'processCreate:add-job to RCRM done', message: JSON.stringify(data) });
+
+        localLogger.debug({ context: 'createJob done', message: JSON.stringify(data) });
     } catch (error) {
-        localLogger.debug({ context: 'processCreate', message: error.message || error.toString() })
+        localLogger.debug({ context: 'createJob error', message: error.message || error.toString() })
     }
 }
 
