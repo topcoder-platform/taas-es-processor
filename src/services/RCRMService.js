@@ -39,6 +39,7 @@ async function createJob(job) {
         const rsp = await request
             .post(`${config.RCRM.API_BASE}/jobs`)
             .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
+            .set('accept', 'json')
             .send({
                 name: job.title,
                 number_of_openings: job.numPositions,
@@ -52,6 +53,7 @@ async function createJob(job) {
 
         localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) });
     } catch (error) {
+        console.log(error)
         localLogger.debug({ context: 'createJob error', message: error.message || error.toString() })
     }
 }
