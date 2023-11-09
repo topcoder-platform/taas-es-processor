@@ -66,3 +66,5 @@ async function createJob(job) {
 module.exports = {
     createJob
 }
+
+logger.buildService(module.exports, 'RCRMService')
