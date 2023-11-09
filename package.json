@@ -26,7 +26,6 @@
     "joi": "^17.4.2",
     "lodash": "^4.17.20",
     "no-kafka": "^3.4.3",
-    "node-fetch": "^3.3.2",
     "superagent": "^8.1.2",
     "tc-core-library-js": "^2.4.1",
     "topcoder-healthcheck-dropin": "^1.0.3",

@@ -1,5 +1,5 @@
 const config = require('config')
-const fetch = require('node-fetch')
+const request = require('superagent')
 const logger = require('../common/logger')
 
 const localLogger = {
@@ -35,30 +35,22 @@ async function createJob(job) {
         })
     }
 
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: `Bearer ${config.RCRM.API_KEY}`
-        },
-        body: JSON.stringify({
-            name: job.title,
-            number_of_openings: job.numPositions,
-            company_slug: config.RCRM.COMPANY_SLUG,
-            contact_slug: config.RCRM.CONTACT_SLUG,
-            job_description_text: job.description,
-            currency_id: 2,
-            custom_fields,
-            enable_job_application_form: 0
-        })
-    };
-
     try {
-        const rsp = await fetch(`${config.RCRM.API_BASE}/jobs`, options);
-        const data = await rsp.json();
+        const rsp = await request
+            .post(`${config.RCRM.API_BASE}/jobs`)
+            .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
+            .send({
+                name: job.title,
+                number_of_openings: job.numPositions,
+                company_slug: config.RCRM.COMPANY_SLUG,
+                contact_slug: config.RCRM.CONTACT_SLUG,
+                job_description_text: job.description,
+                currency_id: 2,
+                custom_fields,
+                enable_job_application_form: 0
+            })
 
-        localLogger.debug({ context: 'createJob done', message: JSON.stringify(data) });
+        localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) });
     } catch (error) {
         localLogger.debug({ context: 'createJob error', message: error.message || error.toString() })
     }
