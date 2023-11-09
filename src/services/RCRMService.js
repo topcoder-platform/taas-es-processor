@@ -1,5 +1,5 @@
 const config = require('config')
-const superagent = require('superagent')
+const fetch = require('node-fetch')
 const logger = require('../common/logger')
 
 const localLogger = {
@@ -35,28 +35,29 @@ async function createJob(job) {
         })
     }
 
-    try {
-        const data = await new Promise((resolve, reject) => {
-            superagent
-                .post(`${config.RCRM.API_BASE}/jobs`)
-                .set('Content-Type', 'application/json')
-                .set('Accept', 'application/json')
-                .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
-                .send({
-                    name: job.title,
-                    number_of_openings: job.numPositions,
-                    company_slug: config.RCRM.COMPANY_SLUG,
-                    contact_slug: config.RCRM.CONTACT_SLUG,
-                    job_description_text: job.description,
-                    currency_id: 2,
-                    custom_fields,
-                    enable_job_application_form: 0
-                })
-                .end((error, res) => {
-                    error ? reject(error) : resolve(res);
-                });
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${config.RCRM.API_KEY}`
+        },
+        body: JSON.stringify({
+            name: job.title,
+            number_of_openings: job.numPositions,
+            company_slug: config.RCRM.COMPANY_SLUG,
+            contact_slug: config.RCRM.CONTACT_SLUG,
+            job_description_text: job.description,
+            currency_id: 2,
+            custom_fields,
+            enable_job_application_form: 0
         })
+    };
 
+    try {
+        const rsp = await fetch(`${config.RCRM.API_BASE}/jobs`, options);
+        const data = await rsp.json();
+        
         localLogger.debug({ context: 'processCreate:add-job to RCRM done', message: JSON.stringify(data) });
     } catch (error) {
         localLogger.debug({ context: 'processCreate', message: error.message || error.toString() })
