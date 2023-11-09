@@ -6,6 +6,8 @@ module.exports = {
   PORT: process.env.PORT || 3001,
   LOG_LEVEL: process.env.LOG_LEVEL || 'debug',
 
+  TC_DOMAIN: process.env.TC_DOMAIN || 'topcoder-dev.com',
+
   KAFKA_URL: process.env.KAFKA_URL || 'localhost:9092',
   // below are used for secure Kafka connection, they are optional
   // for the local Kafka, they are not needed
@@ -44,5 +46,15 @@ module.exports = {
     ZAPIER_JOB_CANDIDATE_SWITCH: process.env.ZAPIER_JOB_CANDIDATE_SWITCH || 'OFF',
     ZAPIER_JOB_CANDIDATE_WEBHOOK: process.env.ZAPIER_JOB_CANDIDATE_WEBHOOK,
     TOPCODER_API_URL: process.env.TOPCODER_API_URL || 'http://api.topcoder-dev.com/v5'
+  },
+
+  RCRM: {
+    API_BASE: process.env.RCRM_API_BASE || 'https://api.recruitcrm.io/v1',
+    API_KEY: process.env.RCRM_API_KEY,
+    COMPANY_SLUG: process.env.RCRM_COMPANY_SLUG,
+    CONTACT_SLUG: process.env.RCRM_CONTACT_SLUG,
+    CREATE_JOB_FIELD_DURATION: process.env.RCRM_CREATE_JOB_FIELD_DURATION,
+    CREATE_JOB_FIELD_SKILLS: process.env.RCRM_CREATE_JOB_FIELD_SKILLS,
+    CREATE_JOB_FIELD_CONNECT_LINK: process.env.RCRM_CREATE_JOB_FIELD_CONNECT_LINK,
   }
 }

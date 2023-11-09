@@ -7,6 +7,7 @@ const logger = require('../common/logger')
 const helper = require('../common/helper')
 const constants = require('../common/constants')
 const config = require('config')
+const RCRMService = require('./RCRMService')
 
 const localLogger = {
   debug: ({ context, message }) => logger.debug({ component: 'JobProcessorService', context, message })
@@ -18,7 +19,7 @@ const localLogger = {
  * @param {Object} message the message object
  * @returns {undefined}
  */
-async function postMessageToZapier ({ type, payload }) {
+async function postMessageToZapier({ type, payload }) {
   if (config.zapier.ZAPIER_SWITCH === constants.Zapier.Switch.OFF) {
     localLogger.debug({ context: 'postMessageToZapier', message: 'Zapier Switch off via config, no messages sent' })
     return
@@ -42,12 +43,18 @@ async function postMessageToZapier ({ type, payload }) {
  * @param {Object} message the kafka message
  * @param {String} transactionId
  */
-async function processCreate (message, transactionId) {
+async function processCreate(message, transactionId) {
+
   const job = message.payload
-  await postMessageToZapier({
-    type: constants.Zapier.MessageType.JobCreate,
-    payload: job
-  })
+
+  // create the job in RCRM via API
+  await RCRMService.createJob(job)
+
+  // create a job in recruitCRM via post API
+  // await postMessageToZapier({
+  //   type: constants.Zapier.MessageType.JobCreate,
+  //   payload: job
+  // })
 }
 
 processCreate.schema = Joi.object()
@@ -106,7 +113,7 @@ processCreate.schema = Joi.object()
  * @param {Object} message the kafka message
  * @param {String} transactionId
  */
-async function processUpdate (message, transactionId) {
+async function processUpdate(message, transactionId) {
   const data = message.payload
   await postMessageToZapier({
     type: constants.Zapier.MessageType.JobUpdate,
