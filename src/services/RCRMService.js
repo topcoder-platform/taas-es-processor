@@ -36,7 +36,7 @@ async function createJob(job) {
     }
 
     try {
-        const rsp = await request
+        const rcrmRsp = await request
             .post(`${config.RCRM.API_BASE}/jobs`)
             .set('Authorization', `Bearer ${config.RCRM.API_KEY}`)
             .set('accept', 'json')
@@ -51,7 +51,19 @@ async function createJob(job) {
                 enable_job_application_form: 0
             })
 
-        localLogger.debug({ context: 'createJob', message: JSON.stringify(rsp) })
+        localLogger.debug({ context: 'createJob in RCRM', message: JSON.stringify(rcrmRsp) })
+
+        // set the external id to taas via API with M2M token
+        const token = await helper.getM2MToken()
+        const taasRsp = await request
+            .post(`${config.TAAS_API_URL}/jobs`)
+            .set('Authorization', `Bearer ${token}`)
+            .set('accept', 'json')
+            .send({
+                externalId: rcrmRsp.body.slug
+            })
+
+        localLogger.debug({ context: 'Set id in TaaS ', message: JSON.stringify(taasRsp) })
     } catch (error) {
         console.error('createJob error', error)
     }
