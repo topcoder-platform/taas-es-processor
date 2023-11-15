@@ -65,7 +65,7 @@ async function createJob(job) {
 
         localLogger.debug({ context: 'Set id in TaaS ', message: JSON.stringify(taasRsp) })
     } catch (error) {
-        localLogger.debug({ context: 'createJob error', message: JSON.stringify(error) })
+        console.error('createJob error', error)
     }
 }
 
