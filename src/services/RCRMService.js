@@ -1,6 +1,7 @@
 const config = require('config')
 const request = require('superagent')
 const logger = require('../common/logger')
+const helper = require('../common/helper')
 
 const localLogger = {
     debug: ({ context, message }) => logger.debug({ component: 'JobProcessorService', context, message })
@@ -56,7 +57,7 @@ async function createJob(job) {
         // set the external id to taas via API with M2M token
         const token = await helper.getM2MToken()
         const taasRsp = await request
-            .post(`${config.TAAS_API_URL}/jobs`)
+            .patch(`${config.TAAS_API_URL}/jobs`)
             .set('Authorization', `Bearer ${token}`)
             .set('accept', 'json')
             .send({
