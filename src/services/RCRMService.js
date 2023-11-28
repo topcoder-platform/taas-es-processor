@@ -57,7 +57,7 @@ async function createJob(job) {
         // set the external id to taas via API with M2M token
         const token = await helper.getM2MToken()
         const taasRsp = await request
-            .patch(`${config.TAAS_API_URL}/jobs`)
+            .patch(`${config.TAAS_API_URL}/jobs/${job.id}`)
             .set('Authorization', `Bearer ${token}`)
             .set('accept', 'json')
             .send({
