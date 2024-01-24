@@ -81,7 +81,7 @@ workflows:
             branches:
               only:
                 - dev
-                - bypass-zapier
+                - TSJR-356
 
       - "build-qa":
           context : org-global
