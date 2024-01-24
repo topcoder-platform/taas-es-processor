@@ -87,7 +87,7 @@ processUpdate.schema = Joi.object()
           .keys({
             id: Joi.string().uuid().required(),
             jobId: Joi.string().uuid().required(),
-            tcUserId: Joi.number().integer().required(),
+            userId: Joi.string().required(),
             createdAt: Joi.date().required(),
             createdBy: Joi.string().required(),
             updatedAt: Joi.date().allow(null),
