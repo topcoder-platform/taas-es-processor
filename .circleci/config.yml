@@ -81,7 +81,6 @@ workflows:
             branches:
               only:
                 - dev
-                - TSJR-356
 
       - "build-qa":
           context : org-global
