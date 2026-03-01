@@ -1,22 +1,22 @@
-version: 2
+version: 2.1
 defaults: &defaults
-    docker:
-      - image: cimg/python:3.11.7-browsers
+  docker:
+    - image: cimg/python:3.11.7-browsers
 install_dependency: &install_dependency
   name: Installation of build and deployment dependencies.
   command: |
-    sudo apt update
-    sudo apt install jq
-    sudo apt install python3-pip
+    sudo rm -f /etc/apt/sources.list.d/google-chrome.list || true
+    sudo apt-get update || true
+    sudo apt-get install -y jq python3-pip
     sudo pip3 install awscli --upgrade
-    # sudo pip3 install docker-compose
 install_deploysuite: &install_deploysuite
   name: Installation of install_deploysuite.
   command: |
-    git clone --branch v1.4.15 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
+    git clone --branch v1.4.19 https://github.com/topcoder-platform/tc-deploy-scripts ../buildscript
     cp ./../buildscript/master_deploy.sh .
     cp ./../buildscript/buildenv.sh .
     cp ./../buildscript/awsconfiguration.sh .
+    cp ./../buildscript/psvar-processor.sh .
 restore_cache_settings_for_build: &restore_cache_settings_for_build
   key: docker-node-modules-{{ checksum "package-lock.json" }}
 
@@ -25,25 +25,30 @@ save_cache_settings: &save_cache_settings
   paths:
     - node_modules
 
+run_build: &run_build
+  name: Build of Docker image
+  command: ./build.sh ${APPNAME}
 
 builddeploy_steps: &builddeploy_steps
-      - checkout
-      - setup_remote_docker
-      - run: *install_dependency
-      - run: *install_deploysuite
-      - restore_cache: *restore_cache_settings_for_build
-      - run: ./build.sh ${APPNAME}
-      - save_cache: *save_cache_settings
-      - deploy:
-          name: Running MasterScript.
-          command: |
-            ./awsconfiguration.sh $DEPLOY_ENV
-            source awsenvconf
-            ./buildenv.sh -e $DEPLOY_ENV -b ${LOGICAL_ENV}-${APPNAME}-deployvar
-            source buildenvvar
-            ./master_deploy.sh -d ECS -e $DEPLOY_ENV -t latest -s ${LOGICAL_ENV}-global-appvar,${LOGICAL_ENV}-${APPNAME}-appvar -i ${APPNAME} -p FARGATE
-
-
+  - checkout
+  - setup_remote_docker
+  - run: *install_dependency
+  - run: *install_deploysuite
+  - restore_cache: *restore_cache_settings_for_build
+  - run: *run_build
+  - save_cache: *save_cache_settings
+  - deploy:
+      name: Running deployment.
+      command: |
+        ./awsconfiguration.sh $DEPLOY_ENV
+        source awsenvconf
+        #./buildenv.sh -e DEV -b ${LOGICAL_ENV}-${APPNAME}-deployvar
+        #source buildenvvar
+        #./master_deploy.sh -d ECS -e DEV -t latest -s dev-global-appvar,${LOGICAL_ENV}-${APPNAME}-appvar -i ${APPNAME} -p FARGATE
+        #./deploy.sh DEV $CIRCLE_SHA1  
+        ./psvar-processor.sh -t appenv -p /config/${APPNAME}/deployvar
+        source deployvar_env
+        ./master_deploy.sh -d ECS -e $DEPLOY_ENV -t latest -j /config/${APPNAME}/appvar,/config/common/global-appvar -i ${APPNAME} -p FARGATE
 jobs:
   # Build & Deploy against development backend
   "build-dev":
@@ -51,7 +56,7 @@ jobs:
     environment:
       DEPLOY_ENV: "DEV"
       LOGICAL_ENV: "dev"
-      APPNAME: "taas-es-processor"    
+      APPNAME: "taas-es-processor"
     steps: *builddeploy_steps
 
   "build-qa":
@@ -59,15 +64,15 @@ jobs:
     environment:
       DEPLOY_ENV: "QA"
       LOGICAL_ENV: "qa"
-      APPNAME: "taas-es-processor"    
+      APPNAME: "taas-es-processor"
     steps: *builddeploy_steps
 
   "build-prod":
     <<: *defaults
     environment:
       DEPLOY_ENV: "PROD"
-      LOGICAL_ENV: "prod"    
-      APPNAME: "taas-es-processor"    
+      LOGICAL_ENV: "prod"
+      APPNAME: "taas-es-processor"
     steps: *builddeploy_steps
 
 workflows:
@@ -76,14 +81,14 @@ workflows:
     jobs:
       # Development builds are executed on "develop" branch only.
       - "build-dev":
-          context : org-global
+          context: org-global
           filters:
             branches:
               only:
                 - dev
 
       - "build-qa":
-          context : org-global
+          context: org-global
           filters:
             branches:
               only:
@@ -92,7 +97,7 @@ workflows:
       # Production builds are exectuted only on tagged commits to the
       # master branch.
       - "build-prod":
-          context : org-global
+          context: org-global
           filters:
             branches:
               only: master
